@@ -22,7 +22,7 @@ if (isset($_GET['token'])) {
             $messageType = "info";
         } else {
             // Verify email
-            $updateStmt = $db->prepare("UPDATE users SET is_email_verified = 1, verification_token = NULL WHERE user_id = ?");
+            $updateStmt = $db->prepare("UPDATE users SET is_email_verified = TRUE, verification_token = NULL WHERE user_id = ?");
             if ($updateStmt->execute([$user['user_id']])) {
                 $message = "Email successfully verified! You can now log in.";
                 $messageType = "success";

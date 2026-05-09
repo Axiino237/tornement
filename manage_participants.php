@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } catch (PDOException $e) {
             // Fallback to is_approved column
             $stmt = $db->prepare("UPDATE tournament_participants SET is_approved = ? WHERE participant_id = ? AND tournament_id = ?");
-            $is_approved = $action == 'approve' ? 1 : 0;
+            $is_approved = $action == 'approve' ? true : false;
             $stmt->execute([$is_approved, $participant_id, $_GET['id']]);
         }
         $success = "Participant " . $action . "ed successfully!";
@@ -55,7 +55,7 @@ try {
     $stmt = $db->prepare("SELECT tp.*, u.username, u.email 
                         FROM tournament_participants tp 
                         JOIN users u ON tp.user_id = u.user_id 
-                        WHERE tp.tournament_id = ? AND tp.is_approved = 0");
+                        WHERE tp.tournament_id = ? AND tp.is_approved = FALSE");
     $stmt->execute([$_GET['id']]);
 }
 $pending_participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -73,7 +73,7 @@ try {
     $stmt = $db->prepare("SELECT tp.*, u.username, u.email 
                         FROM tournament_participants tp 
                         JOIN users u ON tp.user_id = u.user_id 
-                        WHERE tp.tournament_id = ? AND tp.is_approved = 1");
+                        WHERE tp.tournament_id = ? AND tp.is_approved = TRUE");
     $stmt->execute([$_GET['id']]);
 }
 $approved_participants = $stmt->fetchAll(PDO::FETCH_ASSOC);

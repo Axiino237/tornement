@@ -93,6 +93,12 @@ function send_email($to, $subject, $body) {
         $settings[$row['setting_key']] = $row['setting_value'];
     }
 
+    // If SMTP user is not set, bypass email sending in development
+    if (empty($settings['smtp_user'])) {
+        error_log("SMTP User not set. Bypassing email to $to");
+        return true; 
+    }
+
     $smtp = new SimpleSMTP(
         $settings['smtp_host'] ?? 'smtp.gmail.com',
         $settings['smtp_port'] ?? 587,
