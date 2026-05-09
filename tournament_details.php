@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
 // Get participants
 $stmt = $db->prepare("SELECT tp.*, u.username, 
                     CASE 
-                        WHEN tp.is_approved = 1 THEN 'Approved'
+                        WHEN tp.is_approved = TRUE THEN 'Approved'
                         ELSE 'Pending'
                     END as status
                     FROM tournament_participants tp 

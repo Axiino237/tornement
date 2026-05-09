@@ -10,20 +10,6 @@ if (!isset($_GET['id']) || !isset($_SESSION['user_id'])) {
 $database = new Database();
 $db = $database->getConnection();
 
-// Add status column if it doesn't exist
-try {
-    $db->exec("ALTER TABLE tournament_participants ADD COLUMN IF NOT EXISTS status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending'");
-    
-    // Update existing records to set status based on is_approved
-    $db->exec("UPDATE tournament_participants SET status = CASE 
-        WHEN is_approved = 1 THEN 'approved' 
-        ELSE 'pending' 
-        END 
-        WHERE status IS NULL");
-} catch (PDOException $e) {
-    // If there's an error, we'll continue with is_approved column
-}
-
 // Verify tournament ownership
 $stmt = $db->prepare("SELECT tournament_id FROM tournaments WHERE tournament_id = ? AND owner_id = ?");
 $stmt->execute([$_GET['id'], $_SESSION['user_id']]);

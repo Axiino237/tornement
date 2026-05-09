@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Insert new user
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $verification_token = bin2hex(random_bytes(32));
-                $stmt = $db->prepare("INSERT INTO users (username, email, password, verification_token, is_email_verified) VALUES (?, ?, ?, ?, 0)");
+                $stmt = $db->prepare("INSERT INTO users (username, email, password, verification_token, is_email_verified) VALUES (?, ?, ?, ?, FALSE)");
                 if ($stmt->execute([$username, $email, $hashed_password, $verification_token])) {
                     $new_user_id = $db->lastInsertId();
                     log_audit($db, $new_user_id, 'REGISTER', "New user registered with username: $username");
