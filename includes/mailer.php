@@ -116,7 +116,7 @@ function send_email($to, $subject, $body) {
 }
 
 function send_verification_email($email, $username, $token) {
-    $base_url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+    $base_url = getenv('APP_URL') ?: ((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]");
     $verify_link = $base_url . "/verify_email.php?token=" . $token;
     
     $subject = "Verify Your Account - Tournament App";
