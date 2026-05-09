@@ -18,12 +18,15 @@ class Database {
         $this->conn = null;
 
         try {
-            $dsn = "pgsql:host=" . $this->host . ";port=" . (getenv('DB_PORT') ?: "5432") . ";dbname=" . $this->db_name;
+            $port = getenv('DB_PORT') ?: "6543";
+            $dsn = "pgsql:host=" . $this->host . ";port=" . $port . ";dbname=" . $this->db_name . ";sslmode=require";
+            
             $this->conn = new PDO($dsn, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
             error_log("Connection Error: " . $e->getMessage());
-            echo "Connection Error. Please check logs.";
+            // Temporarily echoing the error to help you debug in production
+            echo "Connection Error: " . $e->getMessage();
         }
 
         return $this->conn;
