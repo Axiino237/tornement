@@ -19,7 +19,7 @@ class SimpleSMTP {
 
     public function send($from_email, $from_name, $to, $subject, $body) {
         $timeout = 10;
-        $socket = stream_socket_client("tcp://{$this->host}:{$this->port}", $errno, $errstr, $timeout);
+        $socket = @stream_socket_client("tcp://{$this->host}:{$this->port}", $errno, $errstr, $timeout);
 
         if (!$socket) return false;
 
