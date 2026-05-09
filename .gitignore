@@ -1,0 +1,18 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker-compose.yml.swp
+
+# Local app data
+/assets/uploads/game_thumbnails/*
+!/assets/uploads/game_thumbnails/.gitkeep
