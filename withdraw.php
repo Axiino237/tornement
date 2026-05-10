@@ -26,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $amount = isset($_POST['amount']) ? (float)$_POST['amount'] : 0;
     $upi_id = trim($_POST['upi_id']);
     
+    // Calculate 5% fee
+    $fee_amount = $amount * 0.05;
+    $net_amount = $amount - $fee_amount;
+    
     if ($amount <= 0) {
         $error = "Please enter a valid amount.";
     } elseif ($amount > $user_wallet['wallet_balance']) {
@@ -40,19 +44,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $db->prepare("UPDATE users SET wallet_balance = wallet_balance - ? WHERE user_id = ?");
             $stmt->execute([$amount, $_SESSION['user_id']]);
 
-            // Create withdrawal request
-            $stmt = $db->prepare("INSERT INTO wallet_withdrawals (user_id, amount, upi_id) VALUES (?, ?, ?)");
-            $stmt->execute([$_SESSION['user_id'], $amount, $upi_id]);
+            // Create withdrawal request with fee details
+            $stmt = $db->prepare("INSERT INTO wallet_withdrawals (user_id, amount, fee_amount, net_amount, upi_id) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$_SESSION['user_id'], $amount, $fee_amount, $net_amount, $upi_id]);
+            
+            // Record the fee in platform earnings immediately
+            $stmt = $db->prepare("INSERT INTO platform_earnings (amount, type, details) VALUES (?, 'withdrawal_fee', ?)");
+            $stmt->execute([$fee_amount, "Fee from User ID: " . $_SESSION['user_id'] . " withdrawal of ₹$amount"]);
 
             $db->commit();
-            log_audit($db, $_SESSION['user_id'], 'WITHDRAW_REQUEST', "Requested withdrawal of ₹" . number_format($amount, 2) . " to UPI: $upi_id");
-            $success = "Withdrawal request submitted successfully! Your funds will be transferred within 48 hours.";
+            log_audit($db, $_SESSION['user_id'], 'WITHDRAW_REQUEST', "Requested ₹$amount (Fee: ₹$fee_amount, Net: ₹$net_amount) to UPI: $upi_id");
+            $success = "Withdrawal request submitted! ₹" . number_format($net_amount, 2) . " (after 5% fee) will be sent to your UPI within 48 hours.";
             
             // Update local variable so UI reflects immediately
             $user_wallet['wallet_balance'] -= $amount;
         } catch (Exception $e) {
             $db->rollBack();
-            $error = "Failed to process withdrawal request. Please try again.";
+            $error = "Failed to process withdrawal request. Error: " . $e->getMessage();
         }
     }
 }
@@ -96,6 +104,22 @@ $past_withdrawals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <input type="text" class="form-control bg-dark text-light border-secondary" id="upi_id" name="upi_id" placeholder="e.g. yourname@ybl" required>
                     </div>
 
+                    <div id="withdrawal_summary" class="bg-black bg-opacity-50 p-3 rounded mb-3" style="display: none;">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>Withdrawal Amount:</span>
+                            <span id="summary_amount">₹0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between small mb-1 text-danger">
+                            <span>Admin Fee (5%):</span>
+                            <span id="summary_fee">₹0.00</span>
+                        </div>
+                        <hr class="my-2 border-secondary">
+                        <div class="d-flex justify-content-between fw-bold text-success">
+                            <span>Net to Receive:</span>
+                            <span id="summary_net">₹0.00</span>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn btn-warning w-100 py-2 fw-bold" <?php echo $user_wallet['wallet_balance'] <= 0 ? 'disabled' : ''; ?>>
                         <i class="fas fa-paper-plane me-2"></i>Request Withdrawal
                     </button>
@@ -116,7 +140,8 @@ $past_withdrawals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Amount</th>
+                                    <th>Requested</th>
+                                    <th>Net (to pay)</th>
                                     <th>UPI ID</th>
                                     <th>Status</th>
                                 </tr>
@@ -126,6 +151,7 @@ $past_withdrawals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <tr>
                                         <td><?php echo date('M d, Y', strtotime($withdrawal['created_at'])); ?></td>
                                         <td>₹<?php echo number_format($withdrawal['amount'], 2); ?></td>
+                                        <td class="text-success fw-bold">₹<?php echo number_format($withdrawal['net_amount'] ?? $withdrawal['amount'], 2); ?></td>
                                         <td><?php echo htmlspecialchars($withdrawal['upi_id']); ?></td>
                                         <td>
                                             <?php if ($withdrawal['status'] === 'approved'): ?>
@@ -150,5 +176,24 @@ $past_withdrawals = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('amount').addEventListener('input', function() {
+    const amount = parseFloat(this.value) || 0;
+    const summary = document.getElementById('withdrawal_summary');
+    
+    if (amount > 0) {
+        summary.style.display = 'block';
+        const fee = amount * 0.05;
+        const net = amount - fee;
+        
+        document.getElementById('summary_amount').textContent = '₹' + amount.toFixed(2);
+        document.getElementById('summary_fee').textContent = '- ₹' + fee.toFixed(2);
+        document.getElementById('summary_net').textContent = '₹' + net.toFixed(2);
+    } else {
+        summary.style.display = 'none';
+    }
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

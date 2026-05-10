@@ -151,6 +151,18 @@ CREATE TABLE IF NOT EXISTS wallet_withdrawals (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE IF NOT EXISTS wallet_withdrawals (
+    withdrawal_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    fee_amount DECIMAL(10,2) NOT NULL,
+    net_amount DECIMAL(10,2) NOT NULL,
+    upi_id VARCHAR(100) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 -- Settings table
 CREATE TABLE IF NOT EXISTS settings (
     setting_id SERIAL PRIMARY KEY,
