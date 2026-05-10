@@ -61,6 +61,11 @@ require_once __DIR__ . '/logger.php';
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'my_reports.php' ? 'active' : ''; ?>" href="/my_reports.php">
+                        <i class="fas fa-flag text-danger"></i> My Reports
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'recharge.php' ? 'active' : ''; ?>" href="/recharge.php">
                         <i class="fas fa-wallet text-info"></i> Recharge Wallet
                     </a>
@@ -105,6 +110,11 @@ require_once __DIR__ . '/logger.php';
                 <li class="nav-item">
                     <a class="nav-link text-warning <?php echo basename($_SERVER['PHP_SELF']) == 'audit_logs.php' && $is_admin_dir ? 'active' : ''; ?>" href="/admin/audit_logs.php">
                         <i class="fas fa-history"></i> Audit & Service Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-warning <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' && $is_admin_dir ? 'active' : ''; ?>" href="/admin/reports.php">
+                        <i class="fas fa-flag"></i> Reports
                     </a>
                 </li>
                 <?php endif; ?>

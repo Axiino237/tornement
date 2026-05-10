@@ -21,8 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $confirm_password = $_POST['confirm_password'] ?? '';
     $device_id = $_POST['device_id'] ?? 'unknown';
     
+    // Security Questions
+    $questions = $_POST['security_questions'] ?? [];
+    $answers = $_POST['security_answers'] ?? [];
+    
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
-        $error = "Please fill in all fields";
+        $error = "Please fill in all basic fields";
+    } elseif (count($questions) < 3 || count($answers) < 3 || empty($answers[0]) || empty($answers[1]) || empty($answers[2])) {
+        $error = "Please select and answer 3 security questions";
+    } elseif (count(array_unique($questions)) < 3) {
+        $error = "Please select 3 DIFFERENT security questions";
     } elseif ($password !== $confirm_password) {
         $error = "Passwords do not match";
     } elseif (strlen($password) < 6) {
@@ -54,6 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt = $db->prepare("INSERT INTO users (username, email, password, device_id, is_email_verified, status) VALUES (?, ?, ?, ?, TRUE, 'active')");
                     if ($stmt->execute([$username, $email, $hashed_password, $device_id])) {
                         $new_user_id = $db->lastInsertId();
+                        
+                        // Save Security Questions
+                        $stmt_q = $db->prepare("INSERT INTO user_security_questions (user_id, question, answer) VALUES (?, ?, ?)");
+                        for ($i = 0; $i < 3; $i++) {
+                            $stmt_q->execute([$new_user_id, $questions[$i], strtolower(trim($answers[$i]))]);
+                        }
+                        
                         log_audit($db, $new_user_id, 'REGISTER', "New user registered with device_id: $device_id");
                         
                         $success = "Registration successful! You can now <a href='login.php' class='text-info'>Sign in</a> to your account.";
@@ -258,7 +273,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <span class="input-group-text">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" id="regPassword" placeholder="Password" required>
+                        <button type="button" class="input-group-text" id="toggleRegPassword" style="cursor:pointer; border-left:0;">
+                            <i class="fas fa-eye" id="regEyeIcon"></i>
+                        </button>
                     </div>
                     <ul class="password-requirements list-unstyled">
                         <li><i class="fas fa-check-circle"></i>At least 6 characters long</li>
@@ -271,9 +289,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <span class="input-group-text">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+                        <input type="password" class="form-control" name="confirm_password" id="regConfirmPassword" placeholder="Confirm Password" required>
+                        <button type="button" class="input-group-text" id="toggleConfirmPassword" style="cursor:pointer; border-left:0;">
+                            <i class="fas fa-eye" id="confirmEyeIcon"></i>
+                        </button>
                     </div>
                 </div>
+
+                <hr class="border-secondary my-4">
+                <h5 class="text-light mb-3"><i class="fas fa-shield-alt text-info me-2"></i>Security Questions (For Recovery)</h5>
+                
+                <?php 
+                $sec_questions = [
+                    "What is your favorite game?",
+                    "What was the name of your first pet?",
+                    "What city were you born in?",
+                    "What is your mother's maiden name?",
+                    "What was the name of your first school?"
+                ];
+                ?>
+
+                <?php for($i = 0; $i < 3; $i++): ?>
+                <div class="mb-3">
+                    <label class="text-muted small mb-1">Security Question <?php echo $i+1; ?></label>
+                    <select class="form-select bg-dark text-light border-secondary mb-2" name="security_questions[]" required>
+                        <option value="">Select a question</option>
+                        <?php foreach($sec_questions as $q): ?>
+                            <option value="<?php echo htmlspecialchars($q); ?>"><?php echo htmlspecialchars($q); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="text" class="form-control bg-dark text-light border-secondary" name="security_answers[]" placeholder="Your Answer" required>
+                </div>
+                <?php endfor; ?>
                 
                 <button type="submit" class="btn btn-primary btn-register w-100">
                     <i class="fas fa-user-plus me-2"></i>Create Account
@@ -289,13 +336,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Generate or retrieve Device ID
+    // Device ID
     let deviceId = localStorage.getItem('device_id');
     if (!deviceId) {
         deviceId = 'DEV-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
         localStorage.setItem('device_id', deviceId);
     }
     document.getElementById('device_id_input').value = deviceId;
+
+    // Password toggle helper
+    function togglePassword(inputId, iconId) {
+        const pwd = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (pwd.type === 'password') {
+            pwd.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            pwd.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    document.getElementById('toggleRegPassword').addEventListener('click', () => togglePassword('regPassword', 'regEyeIcon'));
+    document.getElementById('toggleConfirmPassword').addEventListener('click', () => togglePassword('regConfirmPassword', 'confirmEyeIcon'));
 });
 </script>
 

@@ -23,7 +23,7 @@ if (!$tournament) {
 // Check if user has already reported this tournament
 $stmt = $db->prepare("SELECT report_id FROM tournament_reports 
                     WHERE tournament_id = ? AND reporter_id = ? 
-                    AND reported_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+                    AND reported_at >= NOW() - INTERVAL '24 hours'");
 $stmt->execute([$_POST['tournament_id'], $_SESSION['user_id']]);
 if ($stmt->rowCount() > 0) {
     $_SESSION['error'] = "You have already reported this tournament in the last 24 hours.";

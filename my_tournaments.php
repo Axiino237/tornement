@@ -16,7 +16,8 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Build query
 $query = "SELECT t.*, 
-          (SELECT COUNT(*) FROM tournament_participants WHERE tournament_id = t.tournament_id) as current_participants
+          (SELECT COUNT(*) FROM tournament_participants WHERE tournament_id = t.tournament_id) as current_participants,
+          (SELECT COUNT(*) FROM tournament_reports WHERE tournament_id = t.tournament_id AND status = 'pending') as pending_reports
           FROM tournaments t 
           WHERE t.owner_id = ?";
 
@@ -215,6 +216,7 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th class="text-light">Status</th>
                                     <th class="text-light">Participants</th>
                                     <th class="text-light">Type</th>
+                                    <th class="text-light">Reports</th>
                                     <th class="text-light">Actions</th>
                                 </tr>
                             </thead>
@@ -258,6 +260,15 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <span class="badge bg-info text-dark">
                                                     <i class="fas fa-gift me-1"></i>Free
                                                 </span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($tournament['pending_reports'] > 0): ?>
+                                                <a href="my_reports.php" class="badge bg-danger text-decoration-none" style="font-size:0.85rem;">
+                                                    <i class="fas fa-flag me-1"></i><?php echo $tournament['pending_reports']; ?> Report<?php echo $tournament['pending_reports'] > 1 ? 's' : ''; ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted small"><i class="fas fa-check-circle text-success me-1"></i>None</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>

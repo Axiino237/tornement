@@ -134,7 +134,10 @@ foreach ($settings_raw as $s) {
                     <div class="mb-4">
                         <label class="form-label">Current QR Code</label>
                         <div class="mb-2">
-                            <img src="../<?php echo htmlspecialchars($settings['admin_qr_path'] ?? 'assets/images/qr_placeholder.png'); ?>" class="img-fluid rounded border border-secondary" style="max-width: 200px;" alt="Current QR">
+                            <?php 
+                            $qr_path = !empty($settings['admin_qr_path']) ? $settings['admin_qr_path'] : 'assets/images/qr_placeholder.png';
+                            ?>
+                            <img src="../<?php echo htmlspecialchars($qr_path); ?>" class="img-fluid rounded border border-secondary" style="max-width: 200px;" alt="Current QR" onerror="this.src='../assets/images/qr_placeholder.png'">
                         </div>
                         <label for="qr_code" class="form-label">Upload New QR Code</label>
                         <input type="file" class="form-control bg-dark text-light border-secondary" id="qr_code" name="qr_code" accept="image/*">

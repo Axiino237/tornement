@@ -110,9 +110,22 @@ CREATE TABLE IF NOT EXISTS tournament_reports (
     reporter_id INT,
     report_reason TEXT NOT NULL,
     is_valid BOOLEAN DEFAULT FALSE,
+    status VARCHAR(20) DEFAULT 'pending',
     reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id),
     FOREIGN KEY (reporter_id) REFERENCES users(user_id)
+);
+
+-- Migration: Add status column if not exists (run once on existing DBs)
+ALTER TABLE tournament_reports ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pending';
+
+-- Security Questions table (3 per user, chosen during registration)
+CREATE TABLE IF NOT EXISTS user_security_questions (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    question TEXT NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Tournament Winners table

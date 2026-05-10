@@ -133,13 +133,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <span class="input-group-text">
                             <i class="fas fa-lock"></i>
                         </span>
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="password" id="loginPassword" placeholder="Password" required>
+                        <button type="button" class="input-group-text" id="toggleLoginPassword" style="cursor:pointer; border-left:0;">
+                            <i class="fas fa-eye" id="loginEyeIcon"></i>
+                        </button>
                     </div>
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-login w-100">
                     <i class="fas fa-sign-in-alt me-2"></i>Sign In
                 </button>
+
+                <div class="text-center mt-3">
+                    <a href="forgot_password.php" class="text-muted" style="font-size:0.85rem;">
+                        <i class="fas fa-key me-1"></i>Forgot Password?
+                    </a>
+                </div>
             </form>
             
             <div class="register-link">
@@ -148,5 +157,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('toggleLoginPassword').addEventListener('click', function() {
+    const pwd = document.getElementById('loginPassword');
+    const icon = document.getElementById('loginEyeIcon');
+    if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        pwd.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?> 
