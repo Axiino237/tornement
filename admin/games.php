@@ -315,6 +315,8 @@ let editModal = null;
 document.addEventListener('DOMContentLoaded', function() {
     const modalEl = document.getElementById('editGameModal');
     if (modalEl) {
+        // Teleport the modal to the body to avoid stacking context issues (trapped behind backdrop)
+        document.body.appendChild(modalEl);
         editModal = new bootstrap.Modal(modalEl);
     }
 
