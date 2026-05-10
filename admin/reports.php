@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_P
 // Fetch all reports with tournament and reporter info
 $stmt = $db->query("
     SELECT tr.report_id, tr.report_reason, tr.reported_at, tr.status,
-           t.title AS tournament_title, t.tournament_id,
+           t.tournament_name AS tournament_title, t.tournament_id,
            u.username AS reporter_username, u.email AS reporter_email
     FROM tournament_reports tr
     LEFT JOIN tournaments t ON tr.tournament_id = t.tournament_id
@@ -63,7 +63,23 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <p class="text-muted fs-5">No reports submitted yet.</p>
             </div>
         <?php else: ?>
-        <div class="table-responsive">
+        <!-- Filter Tabs -->
+        <ul class="nav nav-pills mb-4" id="reportTabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-filter="all">All (<?php echo count($reports); ?>)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-filter="pending">Pending (<?php echo count(array_filter($reports, fn($r) => $r['status'] === 'pending')); ?>)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-filter="resolved">Resolved</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-filter="dismissed">Dismissed</a>
+            </li>
+        </ul>
+
+        <div class="table-responsive" id="reportsContainer">
             <table class="table table-dark table-hover align-middle">
                 <thead class="table-secondary text-dark">
                     <tr>
@@ -78,7 +94,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </thead>
                 <tbody>
                     <?php foreach ($reports as $i => $r): ?>
-                    <tr>
+                    <tr data-status="<?php echo $r['status']; ?>">
                         <td><?php echo $i + 1; ?></td>
                         <td>
                             <a href="/tournament_details.php?id=<?php echo $r['tournament_id']; ?>" class="text-warning text-decoration-none">
@@ -126,5 +142,24 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
         <?php endif; ?>
+
+<script>
+document.querySelectorAll('#reportTabs .nav-link').forEach(tab => {
+    tab.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('#reportTabs .nav-link').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        document.querySelectorAll('#reportsContainer tbody tr').forEach(row => {
+            if (filter === 'all' || row.dataset.status === filter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 
 <?php require_once '../includes/footer.php'; ?>

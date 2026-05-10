@@ -67,6 +67,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $success = "Game added successfully!";
                     log_audit($db, $_SESSION['user_id'], 'ADD_GAME', "Added game: $game_name");
                 }
+            } elseif ($_POST['action'] === 'edit_game') {
+                $game_id = (int)$_POST['game_id'];
+                $game_name = trim($_POST['game_name']);
+                
+                // Get current image url
+                $stmt = $db->prepare("SELECT image_url FROM games WHERE game_id = ?");
+                $stmt->execute([$game_id]);
+                $current_game = $stmt->fetch(PDO::FETCH_ASSOC);
+                $image_url = $current_game['image_url'];
+
+                // Handle New Image Upload if provided
+                if (isset($_FILES['game_image']) && $_FILES['game_image']['error'] == 0) {
+                    $target_dir = "../assets/images/games/";
+                    if (!file_exists($target_dir)) {
+                        mkdir($target_dir, 0777, true);
+                    }
+                    
+                    $file_ext = strtolower(pathinfo($_FILES["game_image"]["name"], PATHINFO_EXTENSION));
+                    $allowed_extensions = array("jpg", "jpeg", "png", "gif", "webp");
+                    
+                    if (in_array($file_ext, $allowed_extensions)) {
+                        $new_filename = uniqid() . '.' . $file_ext;
+                        $target_file = $target_dir . $new_filename;
+                        
+                        if (move_uploaded_file($_FILES["game_image"]["tmp_name"], $target_file)) {
+                            // Delete old image if it exists and is local
+                            if ($image_url && strpos($image_url, 'http') === false) {
+                                $old_file_path = "../" . $image_url;
+                                if (file_exists($old_file_path)) {
+                                    unlink($old_file_path);
+                                }
+                            }
+                            $image_url = "assets/images/games/" . $new_filename;
+                        } else {
+                            $error = "Failed to upload new image file.";
+                        }
+                    } else {
+                        $error = "Invalid file type.";
+                    }
+                }
+
+                if (empty($error) && !empty($game_name)) {
+                    $stmt = $db->prepare("UPDATE games SET game_name = ?, image_url = ? WHERE game_id = ?");
+                    $stmt->execute([$game_name, $image_url, $game_id]);
+                    $success = "Game updated successfully!";
+                    log_audit($db, $_SESSION['user_id'], 'EDIT_GAME', "Updated game: $game_name");
+                }
             } elseif ($_POST['action'] === 'delete_game') {
                 $game_id = $_POST['game_id'];
                 
@@ -130,15 +177,15 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="col-md-5 mb-3 mb-md-0">
                             <label class="form-label">Game Poster/Logo</label>
-                            <input type="file" name="game_image" id="game_image_input" class="form-control" accept="image/*" required onchange="previewImage(this)">
+                            <input type="file" name="game_image" class="form-control" accept="image/*" required onchange="previewImage(this, 'add')">
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary w-100"><i class="fas fa-upload me-1"></i>Add Game</button>
                         </div>
                     </div>
-                    <div id="image_preview_container" class="mt-3" style="display: none;">
+                    <div id="image_preview_container_add" class="mt-3" style="display: none;">
                         <p class="small text-muted mb-1">Preview:</p>
-                        <img id="image_preview" src="" alt="Preview" class="rounded border border-secondary" style="max-height: 120px; display: block; background: #222;">
+                        <img id="image_preview_add" src="" alt="Preview" class="rounded border border-secondary" style="max-height: 120px; display: block; background: #222;">
                     </div>
                 </form>
             </div>
@@ -169,6 +216,10 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </td>
                                     <td class="fw-bold fs-5"><?php echo htmlspecialchars($g['game_name']); ?></td>
                                     <td class="text-end px-4">
+                                        <button type="button" class="btn btn-sm btn-outline-info me-1" 
+                                                onclick="openEditModal(<?php echo $g['game_id']; ?>, '<?php echo htmlspecialchars($g['game_name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($img_src, ENT_QUOTES); ?>')">
+                                            <i class="fas fa-edit me-1"></i>Edit
+                                        </button>
                                         <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this game?');">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="game_id" value="<?php echo $g['game_id']; ?>">
@@ -192,10 +243,49 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<!-- Edit Game Modal -->
+<div class="modal fade" id="editGameModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title"><i class="fas fa-edit text-info me-2"></i>Edit Game</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="action" value="edit_game">
+                    <input type="hidden" name="game_id" id="edit_game_id">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Game Name</label>
+                        <input type="text" name="game_name" id="edit_game_name" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Update Poster/Logo (Optional)</label>
+                        <input type="file" name="game_image" class="form-control mb-2" accept="image/*" onchange="previewImage(this, 'edit')">
+                        <p class="small text-muted">Leave empty to keep current image.</p>
+                    </div>
+                    
+                    <div id="image_preview_container_edit" class="mt-3">
+                        <p class="small text-muted mb-1">Current/New Preview:</p>
+                        <img id="image_preview_edit" src="" alt="Preview" class="rounded border border-secondary" style="max-height: 150px; display: block; background: #222;">
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-function previewImage(input) {
-    const preview = document.getElementById('image_preview');
-    const container = document.getElementById('image_preview_container');
+function previewImage(input, type) {
+    const preview = document.getElementById('image_preview_' + type);
+    const container = document.getElementById('image_preview_container_' + type);
     
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -204,9 +294,19 @@ function previewImage(input) {
             container.style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);
-    } else {
+    } else if (type === 'add') {
         container.style.display = 'none';
     }
+}
+
+function openEditModal(id, name, imgSrc) {
+    document.getElementById('edit_game_id').value = id;
+    document.getElementById('edit_game_name').value = name;
+    document.getElementById('image_preview_edit').src = imgSrc;
+    document.getElementById('image_preview_container_edit').style.display = 'block';
+    
+    var myModal = new bootstrap.Modal(document.getElementById('editGameModal'));
+    myModal.show();
 }
 </script>
 
