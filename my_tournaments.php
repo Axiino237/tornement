@@ -164,9 +164,9 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
-            <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="fas fa-trophy text-warning me-2"></i>My Tournaments</h4>
-                <a href="create_tournament.php" class="btn btn-primary">
+            <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h4 class="mb-0 text-nowrap"><i class="fas fa-trophy text-warning me-2"></i>My Tournaments</h4>
+                <a href="create_tournament.php" class="btn btn-primary px-3">
                     <i class="fas fa-plus me-2"></i>Create New Tournament
                 </a>
             </div>
