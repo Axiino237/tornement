@@ -71,48 +71,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $game_id = (int)$_POST['game_id'];
                 $game_name = trim($_POST['game_name']);
                 
-                // Get current image url
+                // Get current data
                 $stmt = $db->prepare("SELECT image_url FROM games WHERE game_id = ?");
                 $stmt->execute([$game_id]);
                 $current_game = $stmt->fetch(PDO::FETCH_ASSOC);
-                $image_url = $current_game['image_url'];
+                
+                if (!$current_game) {
+                    $error = "Game not found.";
+                } else {
+                    $image_url = $current_game['image_url'];
 
-                // Handle New Image Upload if provided
-                if (isset($_FILES['game_image']) && $_FILES['game_image']['error'] == 0) {
-                    $target_dir = "../assets/images/games/";
-                    if (!file_exists($target_dir)) {
-                        mkdir($target_dir, 0777, true);
-                    }
-                    
-                    $file_ext = strtolower(pathinfo($_FILES["game_image"]["name"], PATHINFO_EXTENSION));
-                    $allowed_extensions = array("jpg", "jpeg", "png", "gif", "webp");
-                    
-                    if (in_array($file_ext, $allowed_extensions)) {
-                        $new_filename = uniqid() . '.' . $file_ext;
-                        $target_file = $target_dir . $new_filename;
-                        
-                        if (move_uploaded_file($_FILES["game_image"]["tmp_name"], $target_file)) {
-                            // Delete old image if it exists and is local
-                            if ($image_url && strpos($image_url, 'http') === false) {
-                                $old_file_path = "../" . $image_url;
-                                if (file_exists($old_file_path)) {
-                                    unlink($old_file_path);
-                                }
-                            }
-                            $image_url = "assets/images/games/" . $new_filename;
-                        } else {
-                            $error = "Failed to upload new image file.";
+                    // Handle New Image Upload if provided
+                    if (isset($_FILES['game_image']) && $_FILES['game_image']['error'] == 0) {
+                        $target_dir = "../assets/images/games/";
+                        if (!file_exists($target_dir)) {
+                            mkdir($target_dir, 0777, true);
                         }
-                    } else {
-                        $error = "Invalid file type.";
+                        
+                        $file_ext = strtolower(pathinfo($_FILES["game_image"]["name"], PATHINFO_EXTENSION));
+                        $allowed_extensions = array("jpg", "jpeg", "png", "gif", "webp");
+                        
+                        if (in_array($file_ext, $allowed_extensions)) {
+                            $new_filename = uniqid() . '.' . $file_ext;
+                            $target_file = $target_dir . $new_filename;
+                            
+                            if (move_uploaded_file($_FILES["game_image"]["tmp_name"], $target_file)) {
+                                // Delete old image if it exists and is local
+                                if ($image_url && strpos($image_url, 'http') === false) {
+                                    $old_file_path = "../" . $image_url;
+                                    if (file_exists($old_file_path)) {
+                                        unlink($old_file_path);
+                                    }
+                                }
+                                $image_url = "assets/images/games/" . $new_filename;
+                            } else {
+                                $error = "Failed to upload new image file.";
+                            }
+                        } else {
+                            $error = "Invalid file type for image.";
+                        }
                     }
-                }
 
-                if (empty($error) && !empty($game_name)) {
-                    $stmt = $db->prepare("UPDATE games SET game_name = ?, image_url = ? WHERE game_id = ?");
-                    $stmt->execute([$game_name, $image_url, $game_id]);
-                    $success = "Game updated successfully!";
-                    log_audit($db, $_SESSION['user_id'], 'EDIT_GAME', "Updated game: $game_name");
+                    if (empty($error) && !empty($game_name)) {
+                        $stmt = $db->prepare("UPDATE games SET game_name = ?, image_url = ? WHERE game_id = ?");
+                        if ($stmt->execute([$game_name, $image_url, $game_id])) {
+                            $success = "Game updated successfully!";
+                            log_audit($db, $_SESSION['user_id'], 'EDIT_GAME', "Updated game ID $game_id: $game_name");
+                        } else {
+                            $error = "Failed to update database record.";
+                        }
+                    }
                 }
             } elseif ($_POST['action'] === 'delete_game') {
                 $game_id = $_POST['game_id'];
@@ -216,8 +224,10 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </td>
                                     <td class="fw-bold fs-5"><?php echo htmlspecialchars($g['game_name']); ?></td>
                                     <td class="text-end px-4">
-                                        <button type="button" class="btn btn-sm btn-outline-info me-1" 
-                                                onclick="openEditModal(<?php echo $g['game_id']; ?>, '<?php echo htmlspecialchars($g['game_name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($img_src, ENT_QUOTES); ?>')">
+                                        <button type="button" class="btn btn-sm btn-outline-info me-1 edit-game-btn" 
+                                                data-id="<?php echo $g['game_id']; ?>" 
+                                                data-name="<?php echo htmlspecialchars($g['game_name'], ENT_QUOTES); ?>" 
+                                                data-img="<?php echo htmlspecialchars($img_src, ENT_QUOTES); ?>">
                                             <i class="fas fa-edit me-1"></i>Edit
                                         </button>
                                         <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this game?');">
@@ -258,19 +268,19 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="hidden" name="game_id" id="edit_game_id">
                     
                     <div class="mb-3">
-                        <label class="form-label">Game Name</label>
-                        <input type="text" name="game_name" id="edit_game_name" class="form-control" required>
+                        <label class="form-label text-light">Game Name</label>
+                        <input type="text" name="game_name" id="edit_game_name" class="form-control bg-dark text-light border-secondary" required>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Update Poster/Logo (Optional)</label>
-                        <input type="file" name="game_image" class="form-control mb-2" accept="image/*" onchange="previewImage(this, 'edit')">
+                        <label class="form-label text-light">Update Poster/Logo (Optional)</label>
+                        <input type="file" name="game_image" class="form-control bg-dark text-light border-secondary mb-2" accept="image/*" onchange="previewImage(this, 'edit')">
                         <p class="small text-muted">Leave empty to keep current image.</p>
                     </div>
                     
                     <div id="image_preview_container_edit" class="mt-3">
                         <p class="small text-muted mb-1">Current/New Preview:</p>
-                        <img id="image_preview_edit" src="" alt="Preview" class="rounded border border-secondary" style="max-height: 150px; display: block; background: #222;">
+                        <img id="image_preview_edit" src="" alt="Preview" class="rounded border border-secondary" style="max-height: 150px; display: block; background: #222; margin: 0 auto;">
                     </div>
                 </div>
                 <div class="modal-footer border-secondary">
@@ -299,15 +309,29 @@ function previewImage(input, type) {
     }
 }
 
-function openEditModal(id, name, imgSrc) {
-    document.getElementById('edit_game_id').value = id;
-    document.getElementById('edit_game_name').value = name;
-    document.getElementById('image_preview_edit').src = imgSrc;
-    document.getElementById('image_preview_container_edit').style.display = 'block';
-    
-    var myModal = new bootstrap.Modal(document.getElementById('editGameModal'));
-    myModal.show();
-}
+// Single modal instance
+let editModal = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize modal
+    editModal = new bootstrap.Modal(document.getElementById('editGameModal'));
+
+    // Handle Edit Button Clicks
+    document.querySelectorAll('.edit-game-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const imgSrc = this.dataset.img;
+
+            document.getElementById('edit_game_id').value = id;
+            document.getElementById('edit_game_name').value = name;
+            document.getElementById('image_preview_edit').src = imgSrc;
+            document.getElementById('image_preview_container_edit').style.display = 'block';
+            
+            editModal.show();
+        });
+    });
+});
 </script>
 
 <?php require_once '../includes/footer.php'; ?>
