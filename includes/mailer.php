@@ -1,3 +1,4 @@
+<?php
 $last_mailer_error = "";
 
 class SimpleSMTP {
