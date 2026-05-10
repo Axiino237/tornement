@@ -224,7 +224,7 @@ $games = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                     $game_name = strtolower(trim($tournament['game_name']));
                                     $image_path = isset($game_images[$game_name]) ? $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image';
                                     ?>
-                                    <img src="<?php echo $image_path; ?>" class="tournament-image" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>">
+                                    <img src="<?php echo $image_path; ?>" class="tournament-image" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop'">
                                     <?php if ($tournament['is_paid']): ?>
                                         <div class="tournament-badge bg-warning text-dark">
                                             <i class="fas fa-coins me-1"></i>Paid Tournament

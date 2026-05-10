@@ -118,7 +118,9 @@ if (isset($_SESSION['user_id'])) {
                         $image_path = isset($game_images[$game_name]) ? $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image';
                         ?>
                         <div style="position: relative;">
-                            <img src="<?php echo $image_path; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>" style="height: 160px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                            <img src="<?php echo $image_path; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>" 
+                                 style="height: 160px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;"
+                                 onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop'">
                             <span class="badge bg-primary" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"><?php echo htmlspecialchars($tournament['game_name']); ?></span>
                         </div>
                         <div class="card-body d-flex flex-column">

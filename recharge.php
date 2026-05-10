@@ -75,7 +75,7 @@ foreach ($settings_raw as $s) {
                 </div>
 
                 <div class="qr-container mb-4 text-center">
-                    <img src="<?php echo htmlspecialchars($settings['admin_qr_path'] ?? 'assets/images/qr_placeholder.png'); ?>" class="img-fluid rounded border border-secondary mb-2" style="max-width: 200px;" alt="UPI QR Code">
+                    <img src="<?php echo htmlspecialchars($settings['admin_qr_path'] ?? 'assets/images/qr_placeholder.png'); ?>" class="img-fluid rounded border border-secondary mb-2" style="max-width: 200px;" alt="UPI QR Code" onerror="this.src='assets/images/qr_placeholder.png'">
                     <p class="text-info mb-1 fw-bold"><?php echo htmlspecialchars($settings['admin_upi_id'] ?? ''); ?></p>
                     <p class="text-muted small">Scan the QR code or pay to the UPI ID above using any UPI App</p>
                 </div>
