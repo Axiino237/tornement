@@ -1,14 +1,11 @@
-<?php
-/**
- * Standalone SMTP Mailer Class
- * No external libraries (PHPMailer/SwiftMailer) required.
- */
+$last_mailer_error = "";
+
 class SimpleSMTP {
     private $host;
     private $port;
     private $user;
     private $pass;
-    private $debug = false;
+    private $debug = true;
 
     public function __construct($host, $port, $user, $pass) {
         $this->host = $host;
@@ -18,41 +15,87 @@ class SimpleSMTP {
     }
 
     public function send($from_email, $from_name, $to, $subject, $body) {
-        $timeout = 10;
-        $socket = @stream_socket_client("tcp://{$this->host}:{$this->port}", $errno, $errstr, $timeout);
+        global $last_mailer_error;
+        $timeout = 15;
+        $protocol = ($this->port == 465) ? "ssl" : "tcp";
+        $socket = @stream_socket_client("{$protocol}://{$this->host}:{$this->port}", $errno, $errstr, $timeout);
 
-        if (!$socket) return false;
+        if (!$socket) {
+            $last_mailer_error = "Connection Error: $errstr ($errno)";
+            error_log("SMTP Connection Error: $errstr ($errno)");
+            return false;
+        }
 
-        $this->getResponse($socket); // 220
-
-        fwrite($socket, "EHLO " . $_SERVER['HTTP_HOST'] . "\r\n");
-        $this->getResponse($socket);
-
-        fwrite($socket, "STARTTLS\r\n");
-        $this->getResponse($socket);
-
-        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+        $res = $this->getResponse($socket); // 220
+        if (substr($res, 0, 3) !== "220") {
+            $last_mailer_error = "Greeting Error: $res";
+            error_log("SMTP Greeting Error: $res");
             fclose($socket);
             return false;
         }
 
-        fwrite($socket, "EHLO " . $_SERVER['HTTP_HOST'] . "\r\n");
+        fwrite($socket, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
         $this->getResponse($socket);
+
+        if ($this->port != 465) {
+            fwrite($socket, "STARTTLS\r\n");
+            $res = $this->getResponse($socket);
+            if (substr($res, 0, 3) !== "220") {
+                $last_mailer_error = "STARTTLS Failed: $res";
+                error_log("SMTP STARTTLS Failed: $res");
+                fclose($socket);
+                return false;
+            }
+
+            if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                $last_mailer_error = "Crypto Error: Failed to enable TLS. Check if your server supports TLS 1.2+";
+                error_log("SMTP Crypto Error: Failed to enable TLS");
+                fclose($socket);
+                return false;
+            }
+
+            fwrite($socket, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
+            $this->getResponse($socket);
+        }
 
         fwrite($socket, "AUTH LOGIN\r\n");
-        $this->getResponse($socket);
+        $res = $this->getResponse($socket);
+        if (substr($res, 0, 3) !== "334") {
+            $last_mailer_error = "Auth Login Error: $res";
+            error_log("SMTP Auth Login Error: $res");
+            fclose($socket);
+            return false;
+        }
 
         fwrite($socket, base64_encode($this->user) . "\r\n");
-        $this->getResponse($socket);
+        $res = $this->getResponse($socket);
+        if (substr($res, 0, 3) !== "334") {
+            $last_mailer_error = "Auth User Error: $res";
+            error_log("SMTP Auth User Error: $res");
+            fclose($socket);
+            return false;
+        }
 
         fwrite($socket, base64_encode($this->pass) . "\r\n");
-        $this->getResponse($socket);
+        $res = $this->getResponse($socket);
+        if (substr($res, 0, 3) !== "235") {
+            $last_mailer_error = "Auth Pass Error: $res. If using Gmail, you MUST use an 'App Password'.";
+            error_log("SMTP Auth Pass Error: $res");
+            fclose($socket);
+            return false;
+        }
 
         fwrite($socket, "MAIL FROM: <{$this->user}>\r\n");
         $this->getResponse($socket);
 
         fwrite($socket, "RCPT TO: <{$to}>\r\n");
-        $this->getResponse($socket);
+        $res = $this->getResponse($socket);
+        if (substr($res, 0, 3) !== "250") {
+            $last_mailer_error = "Recipient Error: $res";
+            error_log("SMTP RCPT Error: $res");
+            fclose($socket);
+            return false;
+        }
 
         fwrite($socket, "DATA\r\n");
         $this->getResponse($socket);
@@ -63,11 +106,18 @@ class SimpleSMTP {
             "To: <{$to}>",
             "From: {$from_name} <{$from_email}>",
             "Subject: {$subject}",
-            "Date: " . date("r")
+            "Date: " . date("r"),
+            "Message-ID: <" . time() . "-" . md5($this->user . $to) . "@" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ">"
         ];
 
         fwrite($socket, implode("\r\n", $headers) . "\r\n\r\n" . $body . "\r\n.\r\n");
-        $this->getResponse($socket);
+        $res = $this->getResponse($socket);
+        if (substr($res, 0, 3) !== "250") {
+            $last_mailer_error = "Data Error: $res";
+            error_log("SMTP Data Error: $res");
+            fclose($socket);
+            return false;
+        }
 
         fwrite($socket, "QUIT\r\n");
         fclose($socket);
@@ -86,33 +136,37 @@ class SimpleSMTP {
 }
 
 function send_email($to, $subject, $body) {
-    global $db;
-    $stmt = $db->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'smtp_%'");
-    $settings = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $settings[$row['setting_key']] = $row['setting_value'];
+    global $db, $last_mailer_error;
+    try {
+        $stmt = $db->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'smtp_%'");
+        $settings = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $settings[$row['setting_key']] = $row['setting_value'];
+        }
+
+        if (empty($settings['smtp_user'])) {
+            $last_mailer_error = "SMTP User not configured.";
+            return false; 
+        }
+
+        $smtp = new SimpleSMTP(
+            $settings['smtp_host'] ?? 'smtp.gmail.com',
+            (int)($settings['smtp_port'] ?? 587),
+            $settings['smtp_user'] ?? '',
+            $settings['smtp_pass'] ?? ''
+        );
+
+        return $smtp->send(
+            $settings['smtp_from_email'] ?? $settings['smtp_user'],
+            $settings['smtp_from_name'] ?? 'Tournament Admin',
+            $to,
+            $subject,
+            $body
+        );
+    } catch (Exception $e) {
+        $last_mailer_error = "Exception: " . $e->getMessage();
+        return false;
     }
-
-    // If SMTP user is not set, bypass email sending in development
-    if (empty($settings['smtp_user'])) {
-        error_log("SMTP User not set. Bypassing email to $to");
-        return true; 
-    }
-
-    $smtp = new SimpleSMTP(
-        $settings['smtp_host'] ?? 'smtp.gmail.com',
-        $settings['smtp_port'] ?? 587,
-        $settings['smtp_user'] ?? '',
-        $settings['smtp_pass'] ?? ''
-    );
-
-    return $smtp->send(
-        $settings['smtp_from_email'] ?? $settings['smtp_user'],
-        $settings['smtp_from_name'] ?? 'Tournament Admin',
-        $to,
-        $subject,
-        $body
-    );
 }
 
 function send_verification_email($email, $username, $token) {
