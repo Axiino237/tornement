@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
     wallet_balance DECIMAL(10,2) DEFAULT 0.00,
     verification_token VARCHAR(100),
     is_email_verified BOOLEAN DEFAULT FALSE,
+    device_id VARCHAR(255) DEFAULT 'unknown',
     role user_role_enum DEFAULT 'user',
     status user_status_enum DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

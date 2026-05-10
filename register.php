@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
+    $device_id = $_POST['device_id'] ?? 'unknown';
     
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
         $error = "Please fill in all fields";
@@ -42,22 +43,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($stmt->fetch()) {
                 $error = "Email already exists";
             } else {
-                // Insert new user
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                $verification_token = bin2hex(random_bytes(32));
-                $stmt = $db->prepare("INSERT INTO users (username, email, password, verification_token, is_email_verified) VALUES (?, ?, ?, ?, FALSE)");
-                if ($stmt->execute([$username, $email, $hashed_password, $verification_token])) {
-                    $new_user_id = $db->lastInsertId();
-                    log_audit($db, $new_user_id, 'REGISTER', "New user registered with username: $username");
-                    
-                    require_once 'includes/mailer.php';
-                    if (send_verification_email($email, $username, $verification_token)) {
-                        $success = "Registration successful! A verification email has been sent to <strong>$email</strong>. Please check your inbox and click the link to activate your account.";
-                    } else {
-                        $error = "Registration successful, but we couldn't send the verification email. Please contact support or try again later.";
-                    }
+                // Check if device already has an ACTIVE account
+                $stmt = $db->prepare("SELECT user_id FROM users WHERE device_id = ? AND status = 'active'");
+                $stmt->execute([$device_id]);
+                if ($stmt->fetch() && $device_id !== 'unknown') {
+                    $error = "This device is already linked to an active account. You cannot create multiple accounts.";
                 } else {
-                    $error = "Registration failed. Please try again.";
+                    // Insert new user
+                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                    $stmt = $db->prepare("INSERT INTO users (username, email, password, device_id, is_email_verified, status) VALUES (?, ?, ?, ?, TRUE, 'active')");
+                    if ($stmt->execute([$username, $email, $hashed_password, $device_id])) {
+                        $new_user_id = $db->lastInsertId();
+                        log_audit($db, $new_user_id, 'REGISTER', "New user registered with device_id: $device_id");
+                        
+                        $success = "Registration successful! You can now <a href='login.php' class='text-info'>Sign in</a> to your account.";
+                    } else {
+                        $error = "Registration failed. Please try again.";
+                    }
                 }
             }
         }
@@ -229,8 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             <?php endif; ?>
             
-            <form method="POST" action="">
+            <form method="POST" action="" id="registerForm">
                 <?php echo csrf_field(); ?>
+                <input type="hidden" name="device_id" id="device_id_input">
+                
                 <div class="mb-4">
                     <div class="input-group">
                         <span class="input-group-text">
@@ -282,5 +286,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Generate or retrieve Device ID
+    let deviceId = localStorage.getItem('device_id');
+    if (!deviceId) {
+        deviceId = 'DEV-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+        localStorage.setItem('device_id', deviceId);
+    }
+    document.getElementById('device_id_input').value = deviceId;
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?> 
