@@ -67,13 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($correct) {
-                // Reset password
-                $hashed_password = password_hash('Login@123', PASSWORD_DEFAULT);
-                $stmt_upd = $db->prepare("UPDATE users SET password = ? WHERE user_id = ?");
-                $stmt_upd->execute([$hashed_password, $user['user_id']]);
-                
-                log_audit($db, $user['user_id'], 'PASSWORD_RESET', "Password reset via security questions");
-                $success = true;
+                $step = 3; // Move to password reset
             } else {
                 $error = "Incorrect answers to security questions. Please try again.";
                 // Reload questions for step 2
@@ -85,6 +79,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = "An error occurred. Please try again.";
             $step = 1;
+        }
+    } elseif ($step == 3) {
+        // Handle new password
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
+        
+        if (empty($password) || empty($confirm_password)) {
+            $error = "Please fill in all fields.";
+            $step = 3;
+        } elseif ($password !== $confirm_password) {
+            $error = "Passwords do not match.";
+            $step = 3;
+        } elseif (strlen($password) < 6) {
+            $error = "Password must be at least 6 characters long.";
+            $step = 3;
+        } else {
+            $stmt = $db->prepare("SELECT user_id FROM users WHERE username = ?");
+            $stmt->execute([$username]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt_upd = $db->prepare("UPDATE users SET password = ? WHERE user_id = ?");
+                $stmt_upd->execute([$hashed_password, $user['user_id']]);
+                
+                log_audit($db, $user['user_id'], 'PASSWORD_RESET', "Password reset via security questions (User set custom password)");
+                $success = true;
+            } else {
+                $error = "User session expired. Please try again from step 1.";
+                $step = 1;
+            }
         }
     }
 }
@@ -130,17 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     font-size: 2.2rem;
     color: white;
 }
-.password-reveal {
-    background: rgba(34,197,94,0.1);
-    border: 1px solid rgba(34,197,94,0.3);
-    border-radius: 10px;
-    padding: 1rem 1.5rem;
-    margin: 1rem 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #4ade80;
-    font-family: monospace;
-}
 .security-question-box {
     background: rgba(255, 255, 255, 0.03);
     padding: 1.5rem;
@@ -175,10 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     h3 {
         font-size: 1.4rem;
     }
-    .password-reveal {
-        font-size: 1.2rem;
-        padding: 0.8rem;
-    }
 }
 </style>
 
@@ -186,17 +196,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="forgot-card">
         <div class="forgot-header">
             <h3 class="fw-bold mb-1">Account Recovery</h3>
-            <p class="text-muted mb-0">Reset your password using security questions</p>
+            <p class="text-muted mb-0">Recover your account securely</p>
         </div>
 
         <div class="p-4">
             <?php if ($success): ?>
                 <div class="success-box">
                     <div class="success-icon"><i class="fas fa-check"></i></div>
-                    <h4 class="fw-bold text-success">Password Reset Successful!</h4>
-                    <p class="text-muted">Your password has been reset to:</p>
-                    <div class="password-reveal">Login@123</div>
-                    <p class="small text-warning mt-2">Please login and change your password immediately.</p>
+                    <h4 class="fw-bold text-success">Password Changed!</h4>
+                    <p class="text-muted">Your password has been updated successfully.</p>
                     <a href="login.php" class="btn btn-primary w-100 mt-3">Go to Login</a>
                 </div>
             <?php else: ?>
@@ -215,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" class="form-control bg-dark text-light border-secondary" name="username" placeholder="Username" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Find My Account</button>
-                    <?php else: ?>
+                    <?php elseif ($step == 2): ?>
                         <p class="text-info mb-4"><i class="fas fa-user-check me-2"></i>Hello <strong><?php echo htmlspecialchars($username); ?></strong>, please answer your security questions:</p>
                         
                         <div class="security-questions-container">
@@ -235,15 +243,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <?php endforeach; ?>
                         </div>
 
-                        <button type="submit" class="btn btn-success w-100">Verify & Reset Password</button>
+                        <button type="submit" class="btn btn-success w-100">Verify Identity</button>
                         <div class="text-center mt-3">
                             <a href="forgot_password.php" class="text-muted small">Try different username</a>
                         </div>
+                    <?php elseif ($step == 3): ?>
+                        <p class="text-success mb-4"><i class="fas fa-check-circle me-2"></i>Identity Verified! Set your new password below:</p>
+                        
+                        <div class="mb-4">
+                            <label class="form-label text-muted small mb-1">New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" id="newPassword" placeholder="Enter new password" required>
+                                <button type="button" class="input-group-text bg-dark border-secondary" id="toggleNewPassword" style="cursor:pointer;">
+                                    <i class="fas fa-eye" id="newEyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-muted small mb-1">Confirm New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control" name="confirm_password" id="confirmNewPassword" placeholder="Confirm new password" required>
+                                <button type="button" class="input-group-text bg-dark border-secondary" id="toggleConfirmNewPassword" style="cursor:pointer;">
+                                    <i class="fas fa-eye" id="confirmEyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Reset Password</button>
                     <?php endif; ?>
                 </form>
             <?php endif; ?>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle helper
+    function setupToggle(buttonId, inputId, iconId) {
+        const btn = document.getElementById(buttonId);
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const pwd = document.getElementById(inputId);
+                const icon = document.getElementById(iconId);
+                if (pwd.type === 'password') {
+                    pwd.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    pwd.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        }
+    }
+
+    setupToggle('toggleNewPassword', 'newPassword', 'newEyeIcon');
+    setupToggle('toggleConfirmNewPassword', 'confirmNewPassword', 'confirmEyeIcon');
+});
+</script>
 
 <?php require_once 'includes/footer.php'; ?>
