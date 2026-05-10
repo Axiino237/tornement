@@ -150,6 +150,7 @@ foreach ($settings_raw as $s) {
         </div>
     </div>
 
+    <!-- SMTP Settings Hidden for now
     <div class="col-md-6 mt-4 mt-md-0">
         <div class="card bg-dark text-light border-secondary h-100">
             <div class="card-header bg-secondary bg-opacity-25 border-bottom border-secondary">
@@ -212,6 +213,7 @@ foreach ($settings_raw as $s) {
             </div>
         </div>
     </div>
+    -->
 </div>
 
 <?php require_once '../includes/footer.php'; ?>
