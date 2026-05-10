@@ -409,6 +409,14 @@ footer {
     }
 }
 
+/* Sidebar Overlay */
+.sidebar-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1035;
+    display: none;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 991.98px) {
     .sidebar {
@@ -502,13 +510,44 @@ footer {
     display: block;
     width: 100%;
     -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
 }
 
 @media (max-width: 991.98px) {
     .table-responsive table {
-        min-width: 800px !important; /* Force scroll for better readability */
+        min-width: 650px !important; 
     }
     .table th, .table td {
+        padding: 0.8rem !important;
+        font-size: 0.85rem !important;
         white-space: nowrap !important;
+    }
+}
+
+/* Card Header Mobile Fix */
+@media (max-width: 575.98px) {
+    .card-header {
+        padding: 1rem !important;
+    }
+    .card-header h4 {
+        font-size: 1.1rem !important;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* QR and Form Mobile Optimization */
+@media (max-width: 480px) {
+    .qr-container img {
+        max-width: 160px !important;
+    }
+    .gap-3 {
+        gap: 0.5rem !important;
+    }
+    .btn-outline-info {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.85rem !important;
     }
 }
