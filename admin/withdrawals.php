@@ -130,15 +130,15 @@ $processed_withdrawals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td class="font-monospace user-select-all text-info small"><?php echo htmlspecialchars($w['upi_id']); ?></td>
                                         <td class="d-none d-md-table-cell"><?php echo date('M d, Y H:i', strtotime($w['created_at'])); ?></td>
                                         <td>
-                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Have you already transferred ₹<?php echo number_format($w['amount'], 2); ?> to <?php echo htmlspecialchars($w['upi_id']); ?>? Click OK to approve.');">
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Already Paid?');">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="withdrawal_id" value="<?php echo $w['withdrawal_id']; ?>">
-                                                <button type="submit" name="action" value="approve" class="btn btn-sm btn-outline-success me-1"><i class="fas fa-check me-1"></i>Approve (Sent)</button>
+                                                <button type="submit" name="action" value="approve" class="btn btn-sm btn-success px-2 py-1 small-badge"><i class="fas fa-check"></i><span class="d-none d-md-inline ms-1">Approve</span></button>
                                             </form>
-                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Reject this withdrawal? The money will be refunded to their wallet.');">
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Reject?');">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="withdrawal_id" value="<?php echo $w['withdrawal_id']; ?>">
-                                                <button type="submit" name="action" value="reject" class="btn btn-sm btn-outline-danger"><i class="fas fa-times me-1"></i>Reject (Refund)</button>
+                                                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger px-2 py-1 small-badge"><i class="fas fa-times"></i><span class="d-none d-md-inline ms-1">Reject</span></button>
                                             </form>
                                         </td>
                                     </tr>

@@ -162,28 +162,28 @@ $games = $stmt->fetchAll(PDO::FETCH_COLUMN);
 <div class="row">
     <div class="col-md-12">
         <div class="card mb-4">
-            <div class="card-header bg-dark text-light">
+            <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h4 class="mb-0"><i class="fas fa-trophy text-warning me-2"></i>Available Tournaments</h4>
             </div>
             <div class="card-body bg-dark">
                 <div class="filter-section">
                     <form method="GET" action="" class="mb-0">
-                        <div class="row g-3">
-                            <div class="col-md-3">
+                        <div class="row g-2 g-md-3">
+                            <div class="col-6 col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark text-light border-primary">
+                                    <span class="input-group-text bg-dark text-light border-primary d-none d-sm-flex">
                                         <i class="fas fa-search"></i>
                                     </span>
                                     <input type="text" class="form-control bg-dark text-light border-primary" name="search" 
-                                           placeholder="Search tournaments..." value="<?php echo htmlspecialchars($search); ?>">
+                                           placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark text-light border-primary">
+                                    <span class="input-group-text bg-dark text-light border-primary d-none d-sm-flex">
                                         <i class="fas fa-gamepad"></i>
                                     </span>
-                                    <select class="form-select bg-dark text-light border-primary" name="game">
+                                    <select class="form-select bg-dark text-light border-primary px-2" name="game">
                                         <option value="">All Games</option>
                                         <?php foreach ($games as $game): ?>
                                             <option value="<?php echo htmlspecialchars($game); ?>" 
@@ -194,21 +194,21 @@ $games = $stmt->fetchAll(PDO::FETCH_COLUMN);
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark text-light border-primary">
+                                    <span class="input-group-text bg-dark text-light border-primary d-none d-sm-flex">
                                         <i class="fas fa-tag"></i>
                                     </span>
-                                    <select class="form-select bg-dark text-light border-primary" name="type">
+                                    <select class="form-select bg-dark text-light border-primary px-2" name="type">
                                         <option value="">All Types</option>
                                         <option value="paid" <?php echo $type_filter === 'paid' ? 'selected' : ''; ?>>Paid</option>
                                         <option value="free" <?php echo $type_filter === 'free' ? 'selected' : ''; ?>>Free</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-filter me-2"></i>Filter
+                                    <i class="fas fa-filter me-1 d-sm-none"></i><span class="d-none d-sm-inline">Filter</span><span class="d-sm-none small">Go</span>
                                 </button>
                             </div>
                         </div>

@@ -125,15 +125,15 @@ $processed_recharges = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td class="font-monospace user-select-all small"><?php echo htmlspecialchars($r['transaction_id']); ?></td>
                                         <td class="d-none d-md-table-cell"><?php echo date('M d, Y H:i', strtotime($r['created_at'])); ?></td>
                                         <td>
-                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Approve this recharge? ₹<?php echo number_format($r['amount'], 2); ?> will be added to the user\'s wallet.');">
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Approve?');">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="recharge_id" value="<?php echo $r['recharge_id']; ?>">
-                                                <button type="submit" name="action" value="approve" class="btn btn-sm btn-outline-success me-1"><i class="fas fa-check me-1"></i>Approve</button>
+                                                <button type="submit" name="action" value="approve" class="btn btn-sm btn-success px-2 py-1 small-badge"><i class="fas fa-check"></i><span class="d-none d-md-inline ms-1">Approve</span></button>
                                             </form>
-                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Reject this recharge request?');">
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Reject?');">
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="recharge_id" value="<?php echo $r['recharge_id']; ?>">
-                                                <button type="submit" name="action" value="reject" class="btn btn-sm btn-outline-danger"><i class="fas fa-times me-1"></i>Reject</button>
+                                                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger px-2 py-1 small-badge"><i class="fas fa-times"></i><span class="d-none d-md-inline ms-1">Reject</span></button>
                                             </form>
                                         </td>
                                     </tr>

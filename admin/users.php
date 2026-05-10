@@ -83,8 +83,11 @@ $all_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php foreach ($all_users as $u): ?>
                                 <tr>
                                     <td class="d-none d-md-table-cell"><?php echo $u['user_id']; ?></td>
-                                    <td><i class="fas fa-user-circle text-muted me-1"></i><span class="small fw-bold"><?php echo htmlspecialchars($u['username']); ?></span></td>
-                                    <td class="small"><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td>
+                                        <div class="fw-bold small"><?php echo htmlspecialchars($u['username']); ?></div>
+                                        <div class="text-muted extra-small d-md-none"><?php echo htmlspecialchars($u['email']); ?></div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell small"><?php echo htmlspecialchars($u['email']); ?></td>
                                     <td><span class="badge bg-info text-dark">₹<?php echo number_format($u['wallet_balance'], 2); ?></span></td>
                                     <td class="d-none d-md-table-cell"><?php echo $u['is_email_verified'] ? '<span class="badge bg-success"><i class="fas fa-check"></i></span>' : '<span class="badge bg-danger"><i class="fas fa-times"></i></span>'; ?></td>
                                     <td class="d-none d-md-table-cell">
@@ -96,9 +99,9 @@ $all_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </td>
                                     <td>
                                         <?php if($u['status'] === 'active'): ?>
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success small-badge">Active</span>
                                         <?php else: ?>
-                                            <span class="badge bg-danger">Inactive</span>
+                                            <span class="badge bg-danger small-badge">Inactive</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -107,9 +110,9 @@ $all_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <?php echo csrf_field(); ?>
                                                 <input type="hidden" name="target_user_id" value="<?php echo $u['user_id']; ?>">
                                                 <?php if ($u['status'] === 'inactive'): ?>
-                                                    <button type="submit" name="action" value="activate" class="btn btn-sm btn-success"><i class="fas fa-check me-1"></i>Activate</button>
+                                                    <button type="submit" name="action" value="activate" class="btn btn-sm btn-success px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-check"></i></button>
                                                 <?php else: ?>
-                                                    <button type="submit" name="action" value="deactivate" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to deactivate this user?')"><i class="fas fa-ban me-1"></i>Deactivate</button>
+                                                    <button type="submit" name="action" value="deactivate" class="btn btn-sm btn-danger px-2 py-1" style="font-size: 0.7rem;" onclick="return confirm('Deactivate?')"><i class="fas fa-ban"></i></button>
                                                 <?php endif; ?>
                                             </form>
                                         <?php endif; ?>

@@ -549,6 +549,15 @@ footer {
     }
 }
 
+/* Mobile Utility Classes */
+.extra-small {
+    font-size: 0.7rem !important;
+}
+.small-badge {
+    padding: 0.25em 0.5em !important;
+    font-size: 0.7rem !important;
+}
+
 /* QR and Form Mobile Optimization */
 @media (max-width: 480px) {
     .qr-container img {
@@ -562,5 +571,8 @@ footer {
         padding: 0.45rem 0.65rem !important;
         font-size: 0.8rem !important;
         min-width: 65px;
+    }
+    .table th, .table td {
+        padding: 0.6rem 0.4rem !important;
     }
 }
