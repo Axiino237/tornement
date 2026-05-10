@@ -253,7 +253,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<!-- Edit Game Modal -->
+<!-- Edit Game Modal (Placed outside of main container to avoid backdrop issues) -->
 <div class="modal fade" id="editGameModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content bg-dark text-light border-secondary">
@@ -313,8 +313,10 @@ function previewImage(input, type) {
 let editModal = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize modal
-    editModal = new bootstrap.Modal(document.getElementById('editGameModal'));
+    const modalEl = document.getElementById('editGameModal');
+    if (modalEl) {
+        editModal = new bootstrap.Modal(modalEl);
+    }
 
     // Handle Edit Button Clicks
     document.querySelectorAll('.edit-game-btn').forEach(btn => {
@@ -328,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('image_preview_edit').src = imgSrc;
             document.getElementById('image_preview_container_edit').style.display = 'block';
             
-            editModal.show();
+            if (editModal) editModal.show();
         });
     });
 });
