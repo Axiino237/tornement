@@ -161,6 +161,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     color: #fff;
 }
+
+@media (max-width: 576px) {
+    .forgot-header {
+        padding: 1.5rem;
+    }
+    .p-4 {
+        padding: 1.5rem !important;
+    }
+    .security-question-box {
+        padding: 1rem;
+    }
+    h3 {
+        font-size: 1.4rem;
+    }
+    .password-reveal {
+        font-size: 1.2rem;
+        padding: 0.8rem;
+    }
+}
 </style>
 
 <div class="forgot-container">

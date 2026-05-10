@@ -57,6 +57,17 @@ $pending_count = count(array_filter($reports, fn($r) => $r['status'] === 'pendin
     padding: 20px;
     text-align: center;
 }
+@media (max-width: 768px) {
+    .report-card {
+        padding: 1.5rem !important;
+    }
+    .stat-card {
+        padding: 15px;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+}
 </style>
 
 <h2><i class="fas fa-flag text-danger me-2"></i>Reports on My Tournaments</h2>
@@ -65,19 +76,19 @@ $pending_count = count(array_filter($reports, fn($r) => $r['status'] === 'pendin
 
 <!-- Stats -->
 <div class="row mb-4 g-3">
-    <div class="col-4">
+    <div class="col-md-4 col-12">
         <div class="stat-card">
             <h3 class="text-danger fw-bold"><?php echo count($reports); ?></h3>
             <small class="text-muted text-uppercase">Total Reports</small>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-4 col-12">
         <div class="stat-card">
             <h3 class="text-warning fw-bold"><?php echo $pending_count; ?></h3>
             <small class="text-muted text-uppercase">Pending</small>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-4 col-12">
         <div class="stat-card">
             <h3 class="text-success fw-bold"><?php echo count(array_filter($reports, fn($r) => $r['status'] === 'resolved')); ?></h3>
             <small class="text-muted text-uppercase">Resolved</small>

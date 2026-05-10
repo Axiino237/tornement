@@ -240,6 +240,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     margin-bottom: 1.5rem;
 }
 
+@media (max-width: 576px) {
+    .register-body {
+        padding: 1.5rem;
+    }
+    .register-header {
+        padding: 1.5rem;
+    }
+    .security-question-box {
+        padding: 1rem;
+    }
+    .register-header h2 {
+        font-size: 1.5rem;
+    }
+    .form-select {
+        font-size: 0.9rem;
+    }
+}
+
 .password-requirements {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
