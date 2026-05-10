@@ -527,27 +527,40 @@ footer {
 /* Card Header Mobile Fix */
 @media (max-width: 575.98px) {
     .card-header {
-        padding: 1rem !important;
+        padding: 0.85rem !important;
     }
     .card-header h4 {
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
     }
     .btn-sm {
         padding: 0.25rem 0.5rem !important;
         font-size: 0.75rem !important;
+    }
+    .main-content {
+        padding: 10px !important;
+        padding-top: 70px !important;
+    }
+    .container {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    .card-body {
+        padding: 0.75rem !important;
     }
 }
 
 /* QR and Form Mobile Optimization */
 @media (max-width: 480px) {
     .qr-container img {
-        max-width: 160px !important;
+        max-width: 150px !important;
+        height: auto !important;
     }
-    .gap-3 {
-        gap: 0.5rem !important;
+    .gap-2 {
+        gap: 0.35rem !important;
     }
     .btn-outline-info {
-        padding: 0.5rem 0.75rem !important;
-        font-size: 0.85rem !important;
+        padding: 0.45rem 0.65rem !important;
+        font-size: 0.8rem !important;
+        min-width: 65px;
     }
 }

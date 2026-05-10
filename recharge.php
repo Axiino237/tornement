@@ -85,22 +85,22 @@ foreach ($settings_raw as $s) {
                     
                     <div class="mb-4">
                         <label class="form-label d-block text-center mb-3">Select Amount to Recharge</label>
-                        <div class="d-flex justify-content-center gap-2 gap-sm-3 flex-wrap">
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
                             <div class="form-check p-0 m-0">
                                 <input class="form-check-input d-none amount-radio" type="radio" name="amount" id="amt20" value="20" required>
-                                <label class="btn btn-outline-info px-3 px-sm-4 py-2" for="amt20">₹20</label>
+                                <label class="btn btn-outline-info px-3 py-2" for="amt20">₹20</label>
                             </div>
                             <div class="form-check p-0 m-0">
                                 <input class="form-check-input d-none amount-radio" type="radio" name="amount" id="amt50" value="50">
-                                <label class="btn btn-outline-info px-3 px-sm-4 py-2" for="amt50">₹50</label>
+                                <label class="btn btn-outline-info px-3 py-2" for="amt50">₹50</label>
                             </div>
                             <div class="form-check p-0 m-0">
                                 <input class="form-check-input d-none amount-radio" type="radio" name="amount" id="amt100" value="100">
-                                <label class="btn btn-outline-info px-3 px-sm-4 py-2" for="amt100">₹100</label>
+                                <label class="btn btn-outline-info px-3 py-2" for="amt100">₹100</label>
                             </div>
                             <div class="form-check p-0 m-0">
                                 <input class="form-check-input d-none amount-radio" type="radio" name="amount" id="amt500" value="500">
-                                <label class="btn btn-outline-info px-3 px-sm-4 py-2" for="amt500">₹500</label>
+                                <label class="btn btn-outline-info px-3 py-2" for="amt500">₹500</label>
                             </div>
                         </div>
                     </div>
