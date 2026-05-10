@@ -141,6 +141,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     color: #4ade80;
     font-family: monospace;
 }
+.security-question-box {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(13, 110, 253, 0.1);
+    margin-bottom: 1.5rem;
+}
+.form-control {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    color: #fff;
+    height: 50px;
+    border-radius: 8px;
+}
+.form-control:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    color: #fff;
+}
 </style>
 
 <div class="forgot-container">
@@ -177,15 +197,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Find My Account</button>
                     <?php else: ?>
-                        <p class="text-info mb-4">Hello <strong><?php echo htmlspecialchars($username); ?></strong>, please answer your security questions:</p>
+                        <p class="text-info mb-4"><i class="fas fa-user-check me-2"></i>Hello <strong><?php echo htmlspecialchars($username); ?></strong>, please answer your security questions:</p>
                         
-                        <?php foreach($questions as $index => $q): ?>
-                            <div class="mb-4">
-                                <label class="form-label text-muted small mb-1">Question <?php echo $index + 1; ?></label>
-                                <p class="text-light mb-2"><?php echo htmlspecialchars($q['question']); ?></p>
-                                <input type="text" class="form-control bg-dark text-light border-secondary" name="answers[]" placeholder="Your Answer" required>
-                            </div>
-                        <?php endforeach; ?>
+                        <div class="security-questions-container">
+                            <?php foreach($questions as $index => $q): ?>
+                                <div class="security-question-box">
+                                    <label class="text-info small fw-bold mb-2 d-block text-uppercase" style="letter-spacing: 1px;">
+                                        <i class="fas fa-question-circle me-1"></i> Question <?php echo $index + 1; ?>
+                                    </label>
+                                    <p class="text-light mb-3" style="font-size: 1.05rem;"><?php echo htmlspecialchars($q['question']); ?></p>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary">
+                                            <i class="fas fa-comment-dots text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control" name="answers[]" placeholder="Enter your answer" required>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
 
                         <button type="submit" class="btn btn-success w-100">Verify & Reset Password</button>
                         <div class="text-center mt-3">

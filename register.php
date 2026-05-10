@@ -210,6 +210,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     border-radius: 0 8px 8px 0;
 }
 
+.form-select {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    color: #fff;
+    height: 50px;
+    border-radius: 8px;
+    transition: all 0.3s;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230d6efd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.form-select:focus {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    color: #fff;
+}
+
+.form-select option {
+    background-color: #1a1a1a;
+    color: #fff;
+}
+
+.security-question-box {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(13, 110, 253, 0.1);
+    margin-bottom: 1.5rem;
+}
+
 .password-requirements {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
@@ -297,7 +327,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <hr class="border-secondary my-4">
-                <h5 class="text-light mb-3"><i class="fas fa-shield-alt text-info me-2"></i>Security Questions (For Recovery)</h5>
+                <div class="d-flex align-items-center mb-3">
+                    <div style="width: 35px; height: 35px; background: rgba(13, 110, 253, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                        <i class="fas fa-shield-alt text-info"></i>
+                    </div>
+                    <h5 class="text-light mb-0">Security Questions</h5>
+                </div>
+                <p class="text-muted small mb-4">Choose 3 questions. These will be used to recover your account if you forget your password.</p>
                 
                 <?php 
                 $sec_questions = [
@@ -309,18 +345,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ];
                 ?>
 
-                <?php for($i = 0; $i < 3; $i++): ?>
-                <div class="mb-3">
-                    <label class="text-muted small mb-1">Security Question <?php echo $i+1; ?></label>
-                    <select class="form-select bg-dark text-light border-secondary mb-2" name="security_questions[]" required>
-                        <option value="">Select a question</option>
-                        <?php foreach($sec_questions as $q): ?>
-                            <option value="<?php echo htmlspecialchars($q); ?>"><?php echo htmlspecialchars($q); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <input type="text" class="form-control bg-dark text-light border-secondary" name="security_answers[]" placeholder="Your Answer" required>
+                <div class="security-questions-container">
+                    <?php for($i = 0; $i < 3; $i++): ?>
+                    <div class="security-question-box">
+                        <label class="text-info small fw-bold mb-2 d-block text-uppercase" style="letter-spacing: 1px;">
+                            <i class="fas fa-question-circle me-1"></i> Question <?php echo $i+1; ?>
+                        </label>
+                        <select class="form-select mb-3" name="security_questions[]" required>
+                            <option value="">Select a security question</option>
+                            <?php foreach($sec_questions as $q): ?>
+                                <option value="<?php echo htmlspecialchars($q); ?>"><?php echo htmlspecialchars($q); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary">
+                                <i class="fas fa-comment-dots text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control" name="security_answers[]" placeholder="Enter your answer" required>
+                        </div>
+                    </div>
+                    <?php endfor; ?>
                 </div>
-                <?php endfor; ?>
                 
                 <button type="submit" class="btn btn-primary btn-register w-100">
                     <i class="fas fa-user-plus me-2"></i>Create Account
