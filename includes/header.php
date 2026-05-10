@@ -155,4 +155,17 @@ require_once __DIR__ . '/logger.php';
         </nav>
         
         <div class="main-content">
+            <!-- Top Banner Ad -->
+            <div class="container mt-3 mb-3 text-center ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4776704024331789"
+                     data-ad-slot="TOP_BANNER_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            
             <div class="container fade-in-up"> 
