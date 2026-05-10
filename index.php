@@ -36,8 +36,8 @@ if (isset($_SESSION['user_id'])) {
 <!-- Hero Section -->
 <div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #334155; padding-top: 6rem !important; padding-bottom: 6rem !important;">
     <div class="container">
-        <h1 class="display-4 fw-bold mb-3 text-white" style="letter-spacing: -1px;">The Ultimate Gaming Arena</h1>
-        <p class="lead mb-5 text-muted mx-auto" style="max-width: 600px;">Join EpicClash to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
+        <h1 class="display-4 fw-bold mb-3 text-white hero-title" style="letter-spacing: -1px;">The Ultimate Gaming Arena</h1>
+        <p class="lead mb-4 mb-md-5 text-muted mx-auto hero-subtitle" style="max-width: 600px;">Join EpicClash to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
         <div class="d-flex justify-content-center gap-3">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="create_tournament.php" class="btn btn-primary btn-lg px-4 shadow-sm">Create Tournament</a>

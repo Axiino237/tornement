@@ -97,8 +97,8 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <thead>
                                 <tr>
                                     <th>Tournament</th>
-                                    <th>Game</th>
-                                    <th>Date</th>
+                                    <th class="d-none d-md-table-cell">Game</th>
+                                    <th class="d-none d-md-table-cell">Date</th>
                                     <th>Status</th>
                                     <th>Participants</th>
                                 </tr>
@@ -107,19 +107,22 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($created_tournaments as $tournament): ?>
                                     <tr>
                                         <td>
-                                            <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
-                                               class="text-light text-decoration-none">
-                                                <?php echo htmlspecialchars($tournament['tournament_name']); ?>
-                                            </a>
+                                            <div class="fw-bold small">
+                                                <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
+                                                   class="text-light text-decoration-none">
+                                                    <?php echo htmlspecialchars($tournament['tournament_name']); ?>
+                                                </a>
+                                            </div>
+                                            <div class="extra-small text-muted d-md-none"><?php echo htmlspecialchars($tournament['game_name']); ?></div>
                                         </td>
-                                        <td><?php echo htmlspecialchars($tournament['game_name']); ?></td>
-                                        <td><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo htmlspecialchars($tournament['game_name']); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
                                         <td>
-                                            <span class="badge bg-<?php echo $tournament['status'] == 'active' ? 'success' : 'secondary'; ?>">
+                                            <span class="badge bg-<?php echo $tournament['status'] == 'active' ? 'success' : 'secondary'; ?> small-badge">
                                                 <?php echo ucfirst($tournament['status']); ?>
                                             </span>
                                         </td>
-                                        <td><?php echo $tournament['current_participants']; ?>/<?php echo $tournament['max_players']; ?></td>
+                                        <td><span class="small"><?php echo $tournament['current_participants']; ?>/<?php echo $tournament['max_players']; ?></span></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -142,10 +145,10 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <thead>
                                 <tr>
                                     <th>Tournament</th>
-                                    <th>Game</th>
-                                    <th>Date</th>
+                                    <th class="d-none d-md-table-cell">Game</th>
+                                    <th class="d-none d-md-table-cell">Date</th>
                                     <th>Status</th>
-                                    <th>Team</th>
+                                    <th class="d-none d-md-table-cell">Team</th>
                                     <th>Approval</th>
                                 </tr>
                             </thead>
@@ -153,19 +156,22 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($joined_tournaments as $tournament): ?>
                                     <tr>
                                         <td>
-                                            <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
-                                               class="text-light text-decoration-none">
-                                                <?php echo htmlspecialchars($tournament['tournament_name']); ?>
-                                            </a>
+                                            <div class="fw-bold small">
+                                                <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
+                                                   class="text-light text-decoration-none">
+                                                    <?php echo htmlspecialchars($tournament['tournament_name']); ?>
+                                                </a>
+                                            </div>
+                                            <div class="extra-small text-muted d-md-none"><?php echo htmlspecialchars($tournament['game_name']); ?></div>
                                         </td>
-                                        <td><?php echo htmlspecialchars($tournament['game_name']); ?></td>
-                                        <td><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo htmlspecialchars($tournament['game_name']); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
                                         <td>
-                                            <span class="badge bg-<?php echo $tournament['status'] == 'active' ? 'success' : 'secondary'; ?>">
+                                            <span class="badge bg-<?php echo $tournament['status'] == 'active' ? 'success' : 'secondary'; ?> small-badge">
                                                 <?php echo ucfirst($tournament['status']); ?>
                                             </span>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell small">
                                             <?php if ($tournament['is_team_based']): ?>
                                                 <?php echo htmlspecialchars($tournament['team_name']); ?>
                                             <?php else: ?>
@@ -174,9 +180,9 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </td>
                                         <td>
                                             <?php if ($tournament['is_approved']): ?>
-                                                <span class="badge bg-success">Approved</span>
+                                                <span class="badge bg-success small-badge">Approved</span>
                                             <?php else: ?>
-                                                <span class="badge bg-warning">Pending</span>
+                                                <span class="badge bg-warning small-badge">Pending</span>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -201,10 +207,10 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <thead>
                                 <tr>
                                     <th>Tournament</th>
-                                    <th>Game</th>
-                                    <th>Date</th>
-                                    <th>Position</th>
-                                    <th>Team</th>
+                                    <th class="d-none d-md-table-cell">Game</th>
+                                    <th class="d-none d-md-table-cell">Date</th>
+                                    <th>Pos</th>
+                                    <th class="d-none d-md-table-cell">Team</th>
                                     <th>Prize</th>
                                 </tr>
                             </thead>
@@ -212,31 +218,34 @@ $won_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php foreach ($won_tournaments as $tournament): ?>
                                     <tr>
                                         <td>
-                                            <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
-                                               class="text-light text-decoration-none">
-                                                <?php echo htmlspecialchars($tournament['tournament_name']); ?>
-                                            </a>
+                                            <div class="fw-bold small">
+                                                <a href="tournament_details.php?id=<?php echo $tournament['tournament_id']; ?>" 
+                                                   class="text-light text-decoration-none">
+                                                    <?php echo htmlspecialchars($tournament['tournament_name']); ?>
+                                                </a>
+                                            </div>
+                                            <div class="extra-small text-muted d-md-none"><?php echo htmlspecialchars($tournament['game_name']); ?></div>
                                         </td>
-                                        <td><?php echo htmlspecialchars($tournament['game_name']); ?></td>
-                                        <td><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo htmlspecialchars($tournament['game_name']); ?></td>
+                                        <td class="d-none d-md-table-cell"><?php echo date('M d, Y', strtotime($tournament['tournament_date'])); ?></td>
                                         <td>
                                             <span class="badge bg-<?php echo $tournament['position'] == 1 ? 'warning' : 
-                                                ($tournament['position'] == 2 ? 'secondary' : 'danger'); ?>">
-                                                <?php echo $tournament['position']; ?> Place
+                                                ($tournament['position'] == 2 ? 'secondary' : 'danger'); ?> small-badge">
+                                                <?php echo $tournament['position']; ?>
                                             </span>
                                         </td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell small">
                                             <?php if ($tournament['is_team_based']): ?>
                                                 <?php echo htmlspecialchars($tournament['team_name']); ?>
                                             <?php else: ?>
                                                 -
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td class="small fw-bold">
                                             <?php if ($tournament['is_paid']): ?>
-                                                ₹<?php echo number_format($tournament['winning_prize'], 2); ?>
+                                                ₹<?php echo number_format($tournament['winning_prize'], 0); ?>
                                             <?php else: ?>
-                                                -
+                                                Free
                                             <?php endif; ?>
                                         </td>
                                     </tr>

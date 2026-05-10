@@ -577,9 +577,22 @@ footer {
     font-size: 0.65rem !important;
 }
 
-/* QR Optimization */
-@media (max-width: 480px) {
-    .qr-container img {
-        max-width: 140px !important;
+/* Hero Section Responsive */
+@media (max-width: 767.98px) {
+    .hero-title {
+        font-size: 1.8rem !important;
     }
+    .hero-subtitle {
+        font-size: 0.95rem !important;
+    }
+    .py-5 {
+        padding-top: 4rem !important;
+        padding-bottom: 4rem !important;
+    }
+}
+
+/* Extra small text helper */
+.extra-small {
+    font-size: 0.65rem !important;
+    display: block;
 }
