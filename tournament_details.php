@@ -181,6 +181,10 @@ if (isset($_SESSION['user_id'])) {
                 <?php 
                 $game_name_key = strtolower(trim($tournament['game_name']));
                 $game_image_path = isset($game_images[$game_name_key]) ? $game_images[$game_name_key] : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop';
+                // Add leading slash if it's a relative path
+                if (!filter_var($game_image_path, FILTER_VALIDATE_URL)) {
+                    $game_image_path = '/' . ltrim($game_image_path, '/');
+                }
                 ?>
                 <div class="mb-4 text-center">
                     <img src="<?php echo $game_image_path; ?>" alt="<?php echo htmlspecialchars($tournament['game_name']); ?> Banner" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop'">
