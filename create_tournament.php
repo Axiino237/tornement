@@ -92,15 +92,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } elseif (empty($registration_fee) || empty($winning_prize) || ($prize_style == 'top_3' && (empty($second_prize) || empty($third_prize))) || ($prize_style == 'per_kill' && empty($per_kill_prize))) {
                 $error = "All prize fields are required based on the selected prize style.";
         } else {
+            // Handle Banner Upload
+            $banner_url = null;
+            if (isset($_FILES['tournament_banner']) && $_FILES['tournament_banner']['error'] == 0) {
+                $target_dir = "assets/images/tournaments/";
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
+                
+                $file_ext = strtolower(pathinfo($_FILES["tournament_banner"]["name"], PATHINFO_EXTENSION));
+                $allowed_extensions = array("jpg", "jpeg", "png", "gif", "webp");
+                
+                if (in_array($file_ext, $allowed_extensions)) {
+                    $new_filename = uniqid('banner_') . '.' . $file_ext;
+                    $target_file = $target_dir . $new_filename;
+                    
+                    if (move_uploaded_file($_FILES["tournament_banner"]["tmp_name"], $target_file)) {
+                        $banner_url = $target_file;
+                    }
+                }
+            }
+
             // Insert tournament
             $stmt = $db->prepare("INSERT INTO tournaments (owner_id, tournament_name, game_name, tournament_date, 
                 max_players, is_team_based, team_size, max_teams, room_id, room_password, is_paid, 
-                registration_fee, prize_style, winning_prize, second_prize, third_prize, per_kill_prize, contact_info, auto_approval) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                registration_fee, prize_style, winning_prize, second_prize, third_prize, per_kill_prize, contact_info, auto_approval, banner_url) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
             if ($stmt->execute([$_SESSION['user_id'], $tournament_name, $game_name, $tournament_date, 
                 $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
-                $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval])) {
+                $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $banner_url])) {
                 $new_id = $db->lastInsertId();
                 log_audit($db, $_SESSION['user_id'], 'CREATE_TOURNAMENT', "Created paid tournament: $tournament_name (ID: $new_id)");
                 $success = "Tournament created successfully!";
@@ -109,15 +130,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     } else {
+        // Handle Banner Upload
+        $banner_url = null;
+        if (isset($_FILES['tournament_banner']) && $_FILES['tournament_banner']['error'] == 0) {
+            $target_dir = "assets/images/tournaments/";
+            if (!file_exists($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+            
+            $file_ext = strtolower(pathinfo($_FILES["tournament_banner"]["name"], PATHINFO_EXTENSION));
+            $allowed_extensions = array("jpg", "jpeg", "png", "gif", "webp");
+            
+            if (in_array($file_ext, $allowed_extensions)) {
+                $new_filename = uniqid('banner_') . '.' . $file_ext;
+                $target_file = $target_dir . $new_filename;
+                
+                if (move_uploaded_file($_FILES["tournament_banner"]["tmp_name"], $target_file)) {
+                    $banner_url = $target_file;
+                }
+            }
+        }
+
         // Insert tournament for free tournaments
         $stmt = $db->prepare("INSERT INTO tournaments (owner_id, tournament_name, game_name, tournament_date, 
             max_players, is_team_based, team_size, max_teams, room_id, room_password, is_paid, 
-            registration_fee, prize_style, winning_prize, second_prize, third_prize, per_kill_prize, contact_info, auto_approval) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            registration_fee, prize_style, winning_prize, second_prize, third_prize, per_kill_prize, contact_info, auto_approval, banner_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if ($stmt->execute([$_SESSION['user_id'], $tournament_name, $game_name, $tournament_date, 
             $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
-            $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval])) {
+            $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $banner_url])) {
             $new_id = $db->lastInsertId();
             log_audit($db, $_SESSION['user_id'], 'CREATE_TOURNAMENT', "Created free tournament: $tournament_name (ID: $new_id)");
             $success = "Tournament created successfully!";
@@ -161,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label for="tournament_name" class="form-label">Tournament Name</label>
@@ -176,6 +218,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <option value="<?php echo htmlspecialchars($game['game_name']); ?>"><?php echo htmlspecialchars($game['game_name']); ?></option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tournament_banner" class="form-label">Tournament Banner (Optional)</label>
+                        <input type="file" class="form-control" id="tournament_banner" name="tournament_banner" accept="image/*">
+                        <small class="text-muted">Upload a custom banner for your tournament (Recommended: 800x400).</small>
                     </div>
 
                     <div class="mb-3">

@@ -37,7 +37,7 @@ if (isset($_SESSION['user_id'])) {
 <div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #334155; padding-top: 6rem !important; padding-bottom: 6rem !important;">
     <div class="container">
         <h1 class="display-4 fw-bold mb-3 text-white hero-title" style="letter-spacing: -1px;">The Ultimate Gaming Arena</h1>
-        <p class="lead mb-4 mb-md-5 text-muted mx-auto hero-subtitle" style="max-width: 600px;">Join EpicClash to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
+        <p class="lead mb-4 mb-md-5 text-muted mx-auto hero-subtitle" style="max-width: 600px;">Join FireCrown to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
         <div class="d-flex justify-content-center gap-3">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="create_tournament.php" class="btn btn-primary btn-lg px-4 shadow-sm">Create Tournament</a>
@@ -115,7 +115,7 @@ if (isset($_SESSION['user_id'])) {
                     <div class="card h-100 border-0 shadow-sm">
                         <?php 
                         $game_name = strtolower(trim($tournament['game_name']));
-                        $image_path = isset($game_images[$game_name]) ? $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image';
+                        $image_path = !empty($tournament['banner_url']) ? '/' . $tournament['banner_url'] : (isset($game_images[$game_name]) ? '/' . $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image');
                         ?>
                         <div style="position: relative;">
                             <img src="<?php echo $image_path; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>" 

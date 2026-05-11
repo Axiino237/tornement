@@ -169,6 +169,11 @@ if (isset($_SESSION['user_id'])) {
                 <h4 class="mb-0"><?php echo htmlspecialchars($tournament['tournament_name']); ?></h4>
             </div>
             <div class="card-body">
+                <?php if (!empty($tournament['banner_url'])): ?>
+                    <div class="mb-4 text-center">
+                        <img src="/<?php echo $tournament['banner_url']; ?>" alt="Tournament Banner" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: 100%; object-fit: cover;" onerror="this.style.display='none'">
+                    </div>
+                <?php endif; ?>
                 <div class="tournament-info mb-4">
                     <p><i class="fas fa-gamepad me-2"></i>Game: <?php echo htmlspecialchars($tournament['game_name']); ?></p>
                     <p><i class="fas fa-calendar me-2"></i>Date: <?php echo date('M d, Y H:i', strtotime($tournament['tournament_date'])); ?></p>

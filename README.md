@@ -1,10 +1,10 @@
-# EpicClash - Gaming Tournament Platform
+# FireCrown - Gaming Tournament Platform
 
-EpicClash is a web-based platform for organizing and participating in gaming tournaments. The platform supports various games including Among Us, Minecraft, Free Fire, and BGMI.
+FireCrown is a web-based platform for organizing and participating in gaming tournaments. The platform supports various games including Among Us, Minecraft, Free Fire, and BGMI.
 
 ## 🌐 Live Website
 
-[EpicClash](http://epicclash.free.nf)
+[FireCrown](http://firecrown.free.nf)
 
 ## 🎯 Keywords
 
@@ -69,10 +69,10 @@ gaming tournament, gaming tournament platform, esports PHP website, Free Fire to
 
 2. **Project Setup**
 
-   - Place the project folder in `C:\xampp\htdocs\epicclash`
+   - Place the project folder in `C:\xampp\htdocs\firecrown`
    - Ensure the folder structure is:
      ```
-     C:\xampp\htdocs\epicclash\
+     C:\xampp\htdocs\firecrown\
      ├── assets/
      ├── config/
      ├── includes/
@@ -83,7 +83,7 @@ gaming tournament, gaming tournament platform, esports PHP website, Free Fire to
 3. **Database Setup**
 
    - Open phpMyAdmin (http://localhost/phpmyadmin)
-   - Create a new database named `epicclash`
+   - Create a new database named `firecrown`
    - Import the provided SQL file into the database
 
 4. **Configuration**
@@ -92,14 +92,14 @@ gaming tournament, gaming tournament platform, esports PHP website, Free Fire to
    - Update database credentials:
      ```php
      $host = 'localhost';
-     $dbname = 'epicclash';
+     $dbname = 'firecrown';
      $username = 'root';
      $password = ''; // Default XAMPP MySQL password is empty
      ```
 
 5. **Access the Website**
    - Open your browser
-   - Navigate to: `http://localhost/epicclash`
+   - Navigate to: `http://localhost/firecrown`
 
 ## 🚀 Deployment to Free Hosting
 
@@ -124,13 +124,13 @@ gaming tournament, gaming tournament platform, esports PHP website, Free Fire to
    - Update database credentials in `config/database.php`
 
 4. **Domain Setup**
-   - Point epicclash.free.nf to your hosting
+   - Point firecrown.free.nf to your hosting
    - Wait for DNS propagation
 
 ## �� Project Structure
 
 ```
-epicclash/
+firecrown/
 ├── assets/
 │   ├── css/
 │   ├── js/

@@ -18,7 +18,7 @@
 
     <footer class="bg-transparent text-light py-4 mt-5 border-top border-secondary">
         <div class="container text-center">
-            <p class="text-muted mb-0">&copy; <?php echo date('Y'); ?> EpicClash. Designed with a modern UI.</p>
+            <p class="text-muted mb-0">&copy; <?php echo date('Y'); ?> FireCrown. Designed with a modern UI.</p>
         </div>
     </footer>
 
