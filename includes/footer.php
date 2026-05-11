@@ -18,7 +18,7 @@
 
     <footer class="bg-transparent text-light py-4 mt-5 border-top border-secondary">
         <div class="container text-center">
-            <p class="text-muted mb-0">&copy; <?php echo date('Y'); ?> FireCrown. Designed with a modern UI.</p>
+            <p class="text-muted mb-0">&copy; <?php echo date('Y'); ?> FireCrown. Developed by <a href="http://www.Axiino.com" target="_blank" class="text-decoration-none text-primary fw-bold">Axiino</a></p>
         </div>
     </footer>
 
