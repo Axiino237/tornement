@@ -37,23 +37,37 @@ if (isset($_SESSION['user_id'])) {
 <div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #334155; padding-top: 6rem !important; padding-bottom: 6rem !important;">
     <div class="container">
         <!-- Floating Logo -->
-        <div class="mb-4">
+        <div class="mb-5">
             <div class="logo-container mx-auto">
                 <img src="/assets/images/games/WhatsApp Image 2026-05-11 at 10.06.26 PM.jpeg" alt="FireCrown Logo" class="hero-logo shadow-lg">
             </div>
+            <h4 class="mt-3 fw-bold text-uppercase tracking-wider" style="color: #f59e0b; letter-spacing: 2px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.5);">FF KOLARU GAMING</h4>
         </div>
         <h1 class="display-4 fw-bold mb-3 text-white hero-title" style="letter-spacing: -1px;">The Ultimate Gaming Arena</h1>
         <p class="lead mb-4 mb-md-5 text-muted mx-auto hero-subtitle" style="max-width: 600px;">Join FireCrown to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
         
         <style>
         .logo-container {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            padding: 5px;
+            padding: 6px;
             background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
             animation: float 4s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.5;
+            animation: pulse 2s infinite;
         }
         
         .hero-logo {
@@ -61,13 +75,19 @@ if (isset($_SESSION['user_id'])) {
             height: 100%;
             object-fit: cover;
             border-radius: 50%;
-            border: 3px solid #0f172a;
+            border: 4px solid #0f172a;
         }
         
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(3deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
             100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.5; }
         }
         
         .hero-title {
