@@ -34,7 +34,7 @@ if (isset($_SESSION['user_id'])) {
 </div> <!-- Close container from header -->
 
 <!-- Hero Section -->
-<div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #334155; padding-top: 6rem !important; padding-bottom: 6rem !important;">
+<div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #2e100a 100%); border-bottom: 1px solid #451a03; padding-top: 6rem !important; padding-bottom: 6rem !important;">
     <div class="container">
         <!-- Floating Logo -->
         <div class="mb-5">
@@ -124,7 +124,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="col-md-4 mb-4">
             <div class="card h-100 p-4 border-0" style="background-color: #1e293b;">
                 <div class="card-body">
-                    <i class="fas fa-trophy fa-3x mb-3" style="color: #38bdf8;"></i>
+                    <i class="fas fa-trophy fa-3x mb-3" style="color: #f59e0b;"></i>
                     <h2 class="display-5 fw-bold text-white mb-0"><?php echo $total_tournaments; ?></h2>
                     <small class="text-uppercase text-muted" style="letter-spacing: 1px; font-weight: 600;">Active Tournaments</small>
                 </div>
@@ -133,7 +133,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="col-md-4 mb-4">
             <div class="card h-100 p-4 border-0" style="background-color: #1e293b;">
                 <div class="card-body">
-                    <i class="fas fa-users fa-3x mb-3 text-success"></i>
+                    <i class="fas fa-users fa-3x mb-3" style="color: #ef4444;"></i>
                     <h2 class="display-5 fw-bold text-white mb-0"><?php echo $total_users; ?></h2>
                     <small class="text-uppercase text-muted" style="letter-spacing: 1px; font-weight: 600;">Registered Gamers</small>
                 </div>
@@ -142,7 +142,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="col-md-4 mb-4">
             <div class="card h-100 p-4 border-0" style="background-color: #1e293b;">
                 <div class="card-body">
-                    <i class="fas fa-gamepad fa-3x mb-3 text-info"></i>
+                    <i class="fas fa-gamepad fa-3x mb-3" style="color: #f59e0b;"></i>
                     <h2 class="display-5 fw-bold text-white mb-0"><?php echo $total_participants; ?></h2>
                     <small class="text-uppercase text-muted" style="letter-spacing: 1px; font-weight: 600;">Total Participants</small>
                 </div>
