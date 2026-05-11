@@ -1,6 +1,5 @@
 <?php
 require_once 'config/database.php';
-require_once 'includes/header.php';
 
 if (!isset($_GET['id'])) {
     header("Location: index.php");
@@ -59,6 +58,8 @@ if ($tournament['status'] == 'active' && empty($tournament['room_id'])) {
         }
     }
 }
+
+require_once 'includes/header.php';
 
 $error = '';
 $success = '';
