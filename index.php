@@ -115,7 +115,7 @@ if (isset($_SESSION['user_id'])) {
                     <div class="card h-100 border-0 shadow-sm">
                         <?php 
                         $game_name = strtolower(trim($tournament['game_name']));
-                        $image_path = !empty($tournament['banner_url']) ? '/' . $tournament['banner_url'] : (isset($game_images[$game_name]) ? '/' . $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image');
+                        $image_path = isset($game_images[$game_name]) ? $game_images[$game_name] : 'https://via.placeholder.com/800x400?text=Game+Image';
                         ?>
                         <div style="position: relative;">
                             <img src="<?php echo $image_path; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($tournament['game_name']); ?>" 

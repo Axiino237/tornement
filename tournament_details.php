@@ -59,6 +59,14 @@ if ($tournament['status'] == 'active' && empty($tournament['room_id'])) {
     }
 }
 
+// Fetch game images for banners
+$stmt = $db->query("SELECT game_name, image_url FROM games");
+$db_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$game_images = [];
+foreach ($db_games as $g) {
+    $game_images[strtolower(trim($g['game_name']))] = $g['image_url'];
+}
+
 require_once 'includes/header.php';
 
 $error = '';
@@ -170,11 +178,13 @@ if (isset($_SESSION['user_id'])) {
                 <h4 class="mb-0"><?php echo htmlspecialchars($tournament['tournament_name']); ?></h4>
             </div>
             <div class="card-body">
-                <?php if (!empty($tournament['banner_url'])): ?>
-                    <div class="mb-4 text-center">
-                        <img src="/<?php echo $tournament['banner_url']; ?>" alt="Tournament Banner" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: 100%; object-fit: cover;" onerror="this.style.display='none'">
-                    </div>
-                <?php endif; ?>
+                <?php 
+                $game_name_key = strtolower(trim($tournament['game_name']));
+                $game_image_path = isset($game_images[$game_name_key]) ? $game_images[$game_name_key] : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop';
+                ?>
+                <div class="mb-4 text-center">
+                    <img src="<?php echo $game_image_path; ?>" alt="<?php echo htmlspecialchars($tournament['game_name']); ?> Banner" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop'">
+                </div>
                 <div class="tournament-info mb-4">
                     <p><i class="fas fa-gamepad me-2"></i>Game: <?php echo htmlspecialchars($tournament['game_name']); ?></p>
                     <p><i class="fas fa-calendar me-2"></i>Date: <?php echo date('M d, Y H:i', strtotime($tournament['tournament_date'])); ?></p>

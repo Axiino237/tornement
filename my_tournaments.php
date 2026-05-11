@@ -300,6 +300,10 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                        class="btn btn-sm btn-danger" title="End Tournament" data-bs-toggle="tooltip">
                                                         <i class="fas fa-flag-checkered"></i>
                                                     </a>
+                                                    <a href="javascript:void(0);" onclick="confirmDelete(<?php echo $tournament['tournament_id']; ?>, '<?php echo addslashes($tournament['tournament_name']); ?>')" 
+                                                       class="btn btn-sm btn-outline-danger" title="Delete Tournament" data-bs-toggle="tooltip">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -321,6 +325,11 @@ $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+function confirmDelete(id, name) {
+    if (confirm('Are you sure you want to delete "' + name + '"? This action cannot be undone.')) {
+        window.location.href = 'delete_tournament.php?id=' + id;
+    }
+}
 document.addEventListener('DOMContentLoaded', function() {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
