@@ -36,8 +36,44 @@ if (isset($_SESSION['user_id'])) {
 <!-- Hero Section -->
 <div class="py-5 text-center mb-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #334155; padding-top: 6rem !important; padding-bottom: 6rem !important;">
     <div class="container">
+        <!-- Floating Logo -->
+        <div class="mb-4">
+            <div class="logo-container mx-auto">
+                <img src="/assets/images/games/WhatsApp Image 2026-05-11 at 10.06.26 PM.jpeg" alt="FireCrown Logo" class="hero-logo shadow-lg">
+            </div>
+        </div>
         <h1 class="display-4 fw-bold mb-3 text-white hero-title" style="letter-spacing: -1px;">The Ultimate Gaming Arena</h1>
         <p class="lead mb-4 mb-md-5 text-muted mx-auto hero-subtitle" style="max-width: 600px;">Join FireCrown to compete in thrilling tournaments, climb the leaderboards, and win epic prizes. Your journey starts here.</p>
+        
+        <style>
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .hero-logo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #0f172a;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        .hero-title {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        </style>
         <div class="d-flex justify-content-center gap-3">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="create_tournament.php" class="btn btn-primary btn-lg px-4 shadow-sm">Create Tournament</a>
