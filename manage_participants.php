@@ -126,10 +126,10 @@ $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
                                         <td><?php echo htmlspecialchars($participant['username']); ?></td>
                                         <td><?php echo htmlspecialchars($participant['email']); ?></td>
                                         <?php if ($tournament['is_team_based']): ?>
-                                            <td><?php echo htmlspecialchars($participant['team_name']); ?></td>
+                                            <td><?php echo htmlspecialchars($participant['team_name'] ?? ''); ?></td>
                                         <?php endif; ?>
                                         <?php if ($tournament['is_paid']): ?>
-                                            <td><?php echo htmlspecialchars($participant['transaction_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($participant['transaction_id'] ?? ''); ?></td>
                                         <?php endif; ?>
                                         <td>
                                             <?php 
@@ -193,10 +193,10 @@ $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
                                         <td><?php echo htmlspecialchars($participant['username']); ?></td>
                                         <td><?php echo htmlspecialchars($participant['email']); ?></td>
                                         <?php if ($tournament['is_team_based']): ?>
-                                            <td><?php echo htmlspecialchars($participant['team_name']); ?></td>
+                                            <td><?php echo htmlspecialchars($participant['team_name'] ?? ''); ?></td>
                                         <?php endif; ?>
                                         <?php if ($tournament['is_paid']): ?>
-                                            <td><?php echo htmlspecialchars($participant['transaction_id']); ?></td>
+                                            <td><?php echo htmlspecialchars($participant['transaction_id'] ?? ''); ?></td>
                                         <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
