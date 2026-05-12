@@ -394,7 +394,7 @@ if (isset($_SESSION['user_id'])) {
             </div>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != $tournament['owner_id']): ?>
+        <?php if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin'): ?>
             <div class="card">
                 <div class="card-header">
                     <h4 class="mb-0">Report Tournament</h4>

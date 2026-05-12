@@ -66,11 +66,13 @@ require_once __DIR__ . '/logger.php';
                     </a>
                 </li>
                 <?php endif; ?>
+                <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'my_reports.php' ? 'active' : ''; ?>" href="/my_reports.php">
                         <i class="fas fa-flag text-danger"></i> My Reports
                     </a>
                 </li>
+                <?php endif; ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'recharge.php' ? 'active' : ''; ?>" href="/recharge.php">
                         <i class="fas fa-wallet text-info"></i> Recharge Wallet
