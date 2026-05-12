@@ -31,16 +31,11 @@ if ($tournament['status'] == 'active' && empty($tournament['room_id'])) {
         try {
             $db->beginTransaction();
             
-            // Refund all participants
-            if ($tournament['is_paid']) {
-                $stmt = $db->prepare("SELECT user_id FROM tournament_participants WHERE tournament_id = ?");
-                $stmt->execute([$tournament['tournament_id']]);
-                $participants_to_refund = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                foreach ($participants_to_refund as $p) {
-                    $stmt = $db->prepare("UPDATE users SET wallet_balance = wallet_balance + ? WHERE user_id = ?");
-                    $stmt->execute([$tournament['registration_fee'], $p['user_id']]);
-                }
+            // Refund all participants in a single query (much faster)
+            if ($tournament['is_paid'] && $tournament['registration_fee'] > 0) {
+                $stmt = $db->prepare("UPDATE users SET wallet_balance = wallet_balance + ? 
+                                    WHERE user_id IN (SELECT user_id FROM tournament_participants WHERE tournament_id = ?)");
+                $stmt->execute([$tournament['registration_fee'], $tournament['tournament_id']]);
             }
             
             // Mark tournament as cancelled
