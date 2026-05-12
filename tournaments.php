@@ -25,8 +25,9 @@ $query = "SELECT t.*, u.username as owner_name,
           JOIN users u ON t.owner_id = u.user_id 
           WHERE t.status = 'active' 
           AND (
-              (t.room_id IS NOT NULL AND t.room_id != '') 
-              OR t.tournament_date >= NOW() - INTERVAL '12 hours'
+              t.tournament_date > NOW() -- Future matches
+              OR (t.room_id IS NOT NULL AND t.room_id != '') -- Past but has Room ID
+              OR t.tournament_date >= NOW() - INTERVAL '12 hours' -- Past, no Room ID, but within grace period
           )";
 
 $params = [];
