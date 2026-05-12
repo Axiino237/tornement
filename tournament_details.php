@@ -25,6 +25,7 @@ if (!$tournament) {
 
 // Auto-Refund & Suspension Logic
 // If match started 10+ mins ago and still no Room ID, cancel and refund
+/* Temporarily disabled to fix loading issue
 if ($tournament['status'] == 'active' && empty($tournament['room_id'])) {
     $match_time = strtotime($tournament['tournament_date']);
     if (time() > ($match_time + 600)) { // 10 minutes grace period
@@ -53,6 +54,7 @@ if ($tournament['status'] == 'active' && empty($tournament['room_id'])) {
         }
     }
 }
+*/
 
 // Fetch game images for banners
 $stmt = $db->query("SELECT game_name, image_url FROM games");
