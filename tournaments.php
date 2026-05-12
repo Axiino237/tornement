@@ -26,7 +26,7 @@ $query = "SELECT t.*, u.username as owner_name,
           WHERE t.status = 'active' 
           AND (
               (t.room_id IS NOT NULL AND t.room_id != '') 
-              OR t.tournament_date >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+              OR t.tournament_date >= NOW() - INTERVAL '12 hours'
           )";
 
 $params = [];

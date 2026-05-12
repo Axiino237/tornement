@@ -21,7 +21,7 @@ $stmt = $db->query("SELECT t.*, u.username as owner_name,
                     WHERE t.status = 'active' 
                     AND (
                         (t.room_id IS NOT NULL AND t.room_id != '') 
-                        OR t.tournament_date >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+                        OR t.tournament_date >= NOW() - INTERVAL '12 hours'
                     )
                     ORDER BY t.created_at DESC LIMIT 4");
 $featured_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
