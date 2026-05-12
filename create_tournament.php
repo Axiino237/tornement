@@ -2,9 +2,13 @@
 require_once 'config/database.php';
 require_once 'includes/header.php';
 
-// Check if user is logged in
+// Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
+    exit();
+}
+if ($_SESSION['role'] !== 'admin') {
+    header("Location: index.php");
     exit();
 }
 

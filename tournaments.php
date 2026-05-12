@@ -23,7 +23,11 @@ $query = "SELECT t.*, u.username as owner_name,
           (SELECT COUNT(*) FROM tournament_participants WHERE tournament_id = t.tournament_id) as current_participants
           FROM tournaments t 
           JOIN users u ON t.owner_id = u.user_id 
-          WHERE t.status = 'active'";
+          WHERE t.status = 'active' 
+          AND (
+              (t.room_id IS NOT NULL AND t.room_id != '') 
+              OR t.tournament_date >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+          )";
 
 $params = [];
 

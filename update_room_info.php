@@ -3,6 +3,10 @@ require_once 'config/database.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+        header("Location: index.php");
+        exit();
+    }
     require_once 'includes/csrf.php';
     if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         die("CSRF token validation failed");

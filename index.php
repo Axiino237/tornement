@@ -19,6 +19,10 @@ $stmt = $db->query("SELECT t.*, u.username as owner_name,
                     FROM tournaments t 
                     JOIN users u ON t.owner_id = u.user_id 
                     WHERE t.status = 'active' 
+                    AND (
+                        (t.room_id IS NOT NULL AND t.room_id != '') 
+                        OR t.tournament_date >= DATE_SUB(NOW(), INTERVAL 12 HOUR)
+                    )
                     ORDER BY t.created_at DESC LIMIT 4");
 $featured_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -124,8 +128,13 @@ if (isset($_SESSION['user_id'])) {
         </style>
         <div class="d-flex justify-content-center gap-3">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="create_tournament.php" class="btn btn-primary btn-lg px-4 shadow-sm">Create Tournament</a>
-                <a href="my_tournaments.php" class="btn btn-outline-light btn-lg px-4 shadow-sm">My Dashboard</a>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+                    <a href="create_tournament.php" class="btn btn-primary btn-lg px-4 shadow-sm">Create Tournament</a>
+                    <a href="my_tournaments.php" class="btn btn-outline-light btn-lg px-4 shadow-sm">My Dashboard</a>
+                <?php else: ?>
+                    <a href="tournaments.php" class="btn btn-primary btn-lg px-4 shadow-sm">Join Tournaments</a>
+                    <a href="profile.php" class="btn btn-outline-light btn-lg px-4 shadow-sm">My Profile</a>
+                <?php endif; ?>
             <?php else: ?>
                 <a href="register.php" class="btn btn-primary btn-lg px-4 shadow-sm">Start Playing Now</a>
                 <a href="login.php" class="btn btn-outline-light btn-lg px-4 shadow-sm">Login to Account</a>
