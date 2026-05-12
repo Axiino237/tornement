@@ -23,6 +23,7 @@ class Database {
             
             $this->conn = new PDO($dsn, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
         } catch(PDOException $e) {
             error_log("Connection Error: " . $e->getMessage());
             // Temporarily echoing the error to help you debug in production
