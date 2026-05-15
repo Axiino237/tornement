@@ -1,6 +1,7 @@
 <?php
 require_once 'config/database.php';
 require_once 'includes/header.php';
+require_once 'includes/telegram.php';
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id'])) {
@@ -107,6 +108,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval])) {
                 $new_id = $db->lastInsertId();
                 log_audit($db, $_SESSION['user_id'], 'CREATE_TOURNAMENT', "Created paid tournament: $tournament_name (ID: $new_id)");
+                
+                // Send Telegram Notification
+                $msg = "<b>🏆 New Paid Tournament Created!</b>\n\n";
+                $msg .= "<b>Name:</b> $tournament_name\n";
+                $msg .= "<b>Game:</b> $game_name\n";
+                $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
+                $msg .= "<b>Fee:</b> ₹" . number_format($registration_fee, 2) . "\n";
+                $msg .= "<b>Prize:</b> ₹" . number_format($winning_prize, 2) . "\n";
+                $msg .= "<b>Max Players:</b> $max_players\n";
+                $msg .= "\n<a href='https://firecrown.axiino.com/tournament_details.php?id=$new_id'>Join Now</a>";
+                sendTelegramNotification($msg);
+
                 $success = "Tournament created successfully!";
             } else {
                 $error = "Failed to create tournament. Please try again.";
@@ -124,6 +137,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval])) {
             $new_id = $db->lastInsertId();
             log_audit($db, $_SESSION['user_id'], 'CREATE_TOURNAMENT', "Created free tournament: $tournament_name (ID: $new_id)");
+            
+            // Send Telegram Notification
+            $msg = "<b>🏆 New Free Tournament Created!</b>\n\n";
+            $msg .= "<b>Name:</b> $tournament_name\n";
+            $msg .= "<b>Game:</b> $game_name\n";
+            $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
+            $msg .= "<b>Max Players:</b> $max_players\n";
+            $msg .= "\n<a href='https://firecrown.axiino.com/tournament_details.php?id=$new_id'>Join Now</a>";
+            sendTelegramNotification($msg);
+
             $success = "Tournament created successfully!";
         } else {
             $error = "Failed to create tournament. Please try again.";
