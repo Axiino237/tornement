@@ -7,6 +7,15 @@ $db = $database->getConnection();
 echo "<h3>Telegram Debug Status</h3>";
 
 try {
+    // Auto-create table if missing
+    $db->exec("CREATE TABLE IF NOT EXISTS telegram_chats (
+        id SERIAL PRIMARY KEY,
+        chat_id VARCHAR(50) UNIQUE,
+        chat_type VARCHAR(20),
+        chat_title VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
     // Check Table
     $stmt = $db->query("SELECT * FROM telegram_chats");
     $chats = $stmt->fetchAll(PDO::FETCH_ASSOC);

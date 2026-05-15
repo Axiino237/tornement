@@ -10,23 +10,39 @@ if (!$update || (!isset($update["message"]) && !isset($update["my_chat_member"])
     exit;
 }
 
-// Handle bot being added to a group (my_chat_member)
-if (isset($update["my_chat_member"])) {
+// Extract chat info from different update types
+if (isset($update["message"])) {
+    $chat_id = $update["message"]["chat"]["id"];
+    $chat_type = $update["message"]["chat"]["type"];
+    $chat_title = isset($update["message"]["chat"]["title"]) ? $update["message"]["chat"]["title"] : "Private Chat";
+    $text = isset($update["message"]["text"]) ? $update["message"]["text"] : "";
+} elseif (isset($update["channel_post"])) {
+    $chat_id = $update["channel_post"]["chat"]["id"];
+    $chat_type = $update["channel_post"]["chat"]["type"];
+    $chat_title = isset($update["channel_post"]["chat"]["title"]) ? $update["channel_post"]["chat"]["title"] : "Channel";
+    $text = isset($update["channel_post"]["text"]) ? $update["channel_post"]["text"] : "";
+} elseif (isset($update["my_chat_member"])) {
     $chat_id = $update["my_chat_member"]["chat"]["id"];
     $chat_type = $update["my_chat_member"]["chat"]["type"];
     $chat_title = isset($update["my_chat_member"]["chat"]["title"]) ? $update["my_chat_member"]["chat"]["title"] : "Group";
+    $text = "";
 } else {
-    $message = $update["message"];
-    $chat_id = $message["chat"]["id"];
-    $chat_type = $message["chat"]["type"];
-    $chat_title = isset($message["chat"]["title"]) ? $message["chat"]["title"] : "Private Chat";
-    $text = isset($message["text"]) ? $message["text"] : "";
+    exit;
 }
 
 $database = new Database();
 $db = $database->getConnection();
 
 try {
+    // Auto-create table if missing (safety check)
+    $db->exec("CREATE TABLE IF NOT EXISTS telegram_chats (
+        id SERIAL PRIMARY KEY,
+        chat_id VARCHAR(50) UNIQUE,
+        chat_type VARCHAR(20),
+        chat_title VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+
     // Store or update chat ID
     $stmt = $db->prepare("INSERT INTO telegram_chats (chat_id, chat_type, chat_title) 
                           VALUES (?, ?, ?) 
