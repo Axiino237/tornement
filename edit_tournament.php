@@ -96,7 +96,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
                 $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $_GET['id'], $_SESSION['user_id']])) {
                 $success = "Tournament updated successfully!";
-                $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                // Refresh tournament data properly
+                $stmt_ref = $db->prepare("SELECT * FROM tournaments WHERE tournament_id = ?");
+                $stmt_ref->execute([$_GET['id']]);
+                $tournament = $stmt_ref->fetch(PDO::FETCH_ASSOC);
 
                 // Send Telegram Notification
                 $msg = "<b>✏️ Tournament Updated!</b>\n\n";
@@ -138,7 +142,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
             $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $_GET['id'], $_SESSION['user_id']])) {
             $success = "Tournament updated successfully!";
-            $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Refresh tournament data properly
+            $stmt_ref = $db->prepare("SELECT * FROM tournaments WHERE tournament_id = ?");
+            $stmt_ref->execute([$_GET['id']]);
+            $tournament = $stmt_ref->fetch(PDO::FETCH_ASSOC);
 
             // Send Telegram Notification
             $msg = "<b>✏️ Tournament Updated (Free)!</b>\n\n";
