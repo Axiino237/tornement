@@ -23,10 +23,8 @@
                     <h5 class="text-white fw-bold mb-4"><i class="fas fa-gamepad text-primary me-2"></i>FireCrown</h5>
                     <p class="text-muted small">The ultimate platform for competitive gaming. Join tournaments, climb the leaderboard, and win amazing prizes.</p>
                     <div class="d-flex gap-3 mt-4">
-                        <a href="#" class="text-muted hover-primary"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-muted hover-primary"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-muted hover-primary"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-muted hover-primary"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/ff_kolaru_gaming._" target="_blank" class="text-muted hover-primary"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/917200752528" target="_blank" class="text-muted hover-primary"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
                 
@@ -55,6 +53,7 @@
                     <ul class="list-unstyled small text-muted">
                         <li class="mb-2"><i class="fas fa-envelope me-2"></i> ffkolarugaming52528@gmail.com</li>
                         <li class="mb-2"><i class="fas fa-location-dot me-2"></i> Chennai, Tamil Nadu, India</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2"></i> +91 72007 52528</li>
                     </ul>
                 </div>
             </div>

@@ -32,13 +32,21 @@ require_once 'includes/header.php';
                             </div>
                         </div>
 
+                        <div class="d-flex mb-4">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; min-width: 50px;">
+                                <i class="fab fa-whatsapp text-white"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-white mb-1">Phone & WhatsApp</h6>
+                                <p class="text-muted mb-0">+91 72007 52528</p>
+                            </div>
+                        </div>
+
                         <div class="mt-5">
                             <h6 class="text-white mb-3">Follow Us</h6>
                             <div class="d-flex gap-3">
-                                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fab fa-twitter"></i></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="fab fa-youtube"></i></a>
+                                <a href="https://www.instagram.com/ff_kolaru_gaming._" target="_blank" class="btn btn-outline-secondary btn-sm"><i class="fab fa-instagram"></i></a>
+                                <a href="https://wa.me/917200752528" target="_blank" class="btn btn-outline-secondary btn-sm"><i class="fab fa-whatsapp"></i></a>
                             </div>
                         </div>
                     </div>
