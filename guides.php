@@ -6,14 +6,31 @@ $database = new Database();
 $db = $database->getConnection();
 
 // Fetch guides
-$stmt = $db->query("SELECT * FROM guides ORDER BY created_at DESC");
-$guides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $db->query("SELECT * FROM guides ORDER BY created_at DESC");
+    $guides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // If table doesn't exist, guides will be empty
+    $guides = [];
+    if (strpos($e->getMessage(), 'relation "guides" does not exist') !== false || strpos($e->getMessage(), "Table 'guides' doesn't exist") !== false) {
+        $setup_required = true;
+    }
+}
 ?>
 
 <div class="py-5" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
     <div class="container text-center">
         <h1 class="display-4 fw-bold text-white mb-3">Gaming Guides</h1>
         <p class="lead text-muted mx-auto" style="max-width: 700px;">Master your favorite games with our expert tips, strategies, and tournament guides.</p>
+        
+        <?php if (isset($setup_required) && $setup_required): ?>
+            <div class="alert alert-warning mt-4 mx-auto" style="max-width: 600px;">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Database Setup Required:</strong> Please run the setup script to initialize the guides.
+                <br><br>
+                <a href="setup_guides.php" class="btn btn-warning btn-sm fw-bold">Run Setup Now</a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
