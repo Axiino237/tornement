@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $msg .= "<b>Fee:</b> ₹" . number_format($registration_fee, 2) . "\n";
                 $msg .= "<b>Prize:</b> ₹" . number_format($winning_prize, 2) . "\n";
                 $msg .= "<b>Max Players:</b> $max_players\n";
-                $msg .= "\n<a href='https://firecrown.axiino.com/tournament_details.php?id=$new_id'>Join Now</a>";
+                $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=$new_id'>Join Now</a>";
                 sendTelegramNotification($msg);
 
                 $success = "Tournament created successfully!";
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $msg .= "<b>Game:</b> $game_name\n";
             $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
             $msg .= "<b>Max Players:</b> $max_players\n";
-            $msg .= "\n<a href='https://firecrown.axiino.com/tournament_details.php?id=$new_id'>Join Now</a>";
+            $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=$new_id'>Join Now</a>";
             sendTelegramNotification($msg);
 
             $success = "Tournament created successfully!";
