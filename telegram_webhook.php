@@ -4,7 +4,8 @@ require_once 'config/database.php';
 $content = file_get_contents("php://input");
 $update = json_decode($content, true);
 
-file_put_contents('telegram_log.txt', "Received: " . date('Y-m-d H:i:s') . "\n" . $content . "\n\n", FILE_APPEND);
+// Debug: Log everything
+file_put_contents('telegram_log.txt', "Update Received: " . date('Y-m-d H:i:s') . "\n" . json_encode($update, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
 if (!$update || (!isset($update["message"]) && !isset($update["my_chat_member"]))) {
     exit;
