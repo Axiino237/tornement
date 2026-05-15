@@ -53,8 +53,8 @@
                 <div class="col-lg-3 col-md-6">
                     <h6 class="text-white fw-bold mb-4">Contact Info</h6>
                     <ul class="list-unstyled small text-muted">
-                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> info@axiino.com</li>
-                        <li class="mb-2"><i class="fas fa-location-dot me-2"></i> Erode, Tamil Nadu, India</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> ffkolarugaming52528@gmail.com</li>
+                        <li class="mb-2"><i class="fas fa-location-dot me-2"></i> Chennai, Tamil Nadu, India</li>
                     </ul>
                 </div>
             </div>

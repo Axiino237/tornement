@@ -13,7 +13,7 @@ require_once 'includes/header.php';
                 <div class="privacy-content text-light">
                     <section class="mb-5">
                         <h3 class="text-primary mb-3">1. Introduction</h3>
-                        <p>Welcome to FireCrown ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy or our practices with regards to your personal information, please contact us at info@axiino.com.</p>
+                        <p>Welcome to FireCrown ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy or our practices with regards to your personal information, please contact us at ffkolarugaming52528@gmail.com.</p>
                     </section>
 
                     <section class="mb-5">
@@ -44,7 +44,7 @@ require_once 'includes/header.php';
 
                     <section class="mb-5">
                         <h3 class="text-primary mb-3">6. Contact Us</h3>
-                        <p>If you have questions or comments about this policy, you may email us at info@axiino.com.</p>
+                        <p>If you have questions or comments about this policy, you may email us at ffkolarugaming52528@gmail.com.</p>
                     </section>
                 </div>
             </div>

@@ -18,7 +18,7 @@ require_once 'includes/header.php';
                             </div>
                             <div>
                                 <h6 class="text-white mb-1">Email Support</h6>
-                                <p class="text-muted mb-0">info@axiino.com</p>
+                                <p class="text-muted mb-0">ffkolarugaming52528@gmail.com</p>
                             </div>
                         </div>
 
@@ -28,7 +28,7 @@ require_once 'includes/header.php';
                             </div>
                             <div>
                                 <h6 class="text-white mb-1">Our Location</h6>
-                                <p class="text-muted mb-0">Erode, Tamil Nadu, India</p>
+                                <p class="text-muted mb-0">Chennai, Tamil Nadu, India</p>
                             </div>
                         </div>
 
