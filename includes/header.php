@@ -52,6 +52,11 @@ require_once __DIR__ . '/logger.php';
                         <i class="fas fa-trophy"></i> Tournaments
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'guides.php' || basename($_SERVER['PHP_SELF']) == 'guide_details.php' ? 'active' : ''; ?>" href="/guides.php">
+                        <i class="fas fa-book"></i> Gaming Guides
+                    </a>
+                </li>
                 
                 <?php if(isset($_SESSION['user_id'])): ?>
                 <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>

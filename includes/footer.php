@@ -16,11 +16,62 @@
         </div> <!-- /main-content -->
     </div> <!-- /wrapper -->
 
-    <footer class="bg-transparent text-light py-4 mt-5 border-top border-secondary">
-        <div class="container text-center">
-            <p class="text-muted mb-0">&copy; <?php echo date('Y'); ?> FireCrown. Developed by <a href="http://www.Axiino.com" target="_blank" class="text-decoration-none text-primary fw-bold">Axiino</a></p>
+    <footer class="bg-dark text-light py-5 mt-5 border-top border-secondary">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white fw-bold mb-4"><i class="fas fa-gamepad text-primary me-2"></i>FireCrown</h5>
+                    <p class="text-muted small">The ultimate platform for competitive gaming. Join tournaments, climb the leaderboard, and win amazing prizes.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-muted hover-primary"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-muted hover-primary"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-muted hover-primary"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-muted hover-primary"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-bold mb-4">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/index.php" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="/tournaments.php" class="text-muted text-decoration-none">Tournaments</a></li>
+                        <li class="mb-2"><a href="/guides.php" class="text-muted text-decoration-none">Gaming Guides</a></li>
+                        <li class="mb-2"><a href="/about-us.php" class="text-muted text-decoration-none">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-4">Support & Legal</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/contact-us.php" class="text-muted text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="/privacy-policy.php" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="/terms-conditions.php" class="text-muted text-decoration-none">Terms & Conditions</a></li>
+                        <li class="mb-2"><a href="/index.php" class="text-muted text-decoration-none">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-4">Contact Info</h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> info@axiino.com</li>
+                        <li class="mb-2"><i class="fas fa-location-dot me-2"></i> Erode, Tamil Nadu, India</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4 border-secondary opacity-25">
+            
+            <div class="text-center">
+                <p class="text-muted small mb-0">&copy; <?php echo date('Y'); ?> FireCrown. All Rights Reserved.</p>
+                <p class="text-muted extra-small">Developed with <i class="fas fa-heart text-danger"></i> by <a href="http://www.Axiino.com" target="_blank" class="text-decoration-none text-primary fw-bold">Axiino</a></p>
+            </div>
         </div>
     </footer>
+
+    <style>
+        .hover-primary:hover { color: #38bdf8 !important; }
+        .extra-small { font-size: 0.75rem; }
+    </style>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

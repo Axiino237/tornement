@@ -185,6 +185,27 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
+    
+    <!-- Game Categories -->
+    <div class="mb-5" id="categories">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <h3 class="fw-bold mb-0 text-white">Browse Categories</h3>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($db_games as $game): ?>
+                <div class="col-6 col-md-3">
+                    <a href="tournaments.php?game=<?php echo urlencode($game['game_name']); ?>" class="text-decoration-none">
+                        <div class="card bg-dark border-secondary h-100 text-center p-3 hover-transform">
+                            <div class="mb-2">
+                                <img src="<?php echo htmlspecialchars($game['image_url']); ?>" alt="<?php echo htmlspecialchars($game['game_name']); ?>" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #38bdf8;">
+                            </div>
+                            <h6 class="text-white mb-0"><?php echo htmlspecialchars($game['game_name']); ?></h6>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <!-- Featured Tournaments -->
     <div class="d-flex justify-content-between align-items-end mb-4">
