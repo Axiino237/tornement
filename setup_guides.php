@@ -83,6 +83,7 @@ try {
     }
 
     echo "Successfully inserted " . count($guides) . " guides into the database.";
+    echo "<br><br><a href='guides.php' style='padding: 10px 20px; background: #0284c7; color: white; text-decoration: none; border-radius: 5px;'>Back to Guides</a>";
 
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
