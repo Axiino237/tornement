@@ -5,6 +5,9 @@ require_once 'includes/header.php';
 $database = new Database();
 $db = $database->getConnection();
 
+require_once 'includes/tournament_cleanup.php';
+cleanupStaleTournaments($db);
+
 // Fetch game images from database
 $stmt = $db->query("SELECT game_name, image_url FROM games");
 $db_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -24,7 +27,7 @@ $query = "SELECT t.*, u.username as owner_name,
           FROM tournaments t 
           JOIN users u ON t.owner_id = u.user_id 
           WHERE t.status = 'active'
-          AND t.tournament_date >= NOW() - INTERVAL '2 hours'";
+          AND (t.tournament_date >= NOW() OR (t.tournament_date >= NOW() - INTERVAL '2 hours' AND t.room_id IS NOT NULL AND t.room_id != ''))";
 
 $params = [];
 
@@ -54,7 +57,7 @@ $stmt->execute($params);
 $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get unique games for filter
-$stmt = $db->query("SELECT DISTINCT game_name FROM tournaments WHERE status = 'active' AND tournament_date >= NOW() - INTERVAL '2 hours' ORDER BY game_name");
+$stmt = $db->query("SELECT DISTINCT game_name FROM tournaments WHERE status = 'active' AND (tournament_date >= NOW() OR (tournament_date >= NOW() - INTERVAL '2 hours' AND room_id IS NOT NULL AND room_id != '')) ORDER BY game_name");
 $games = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 

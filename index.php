@@ -5,6 +5,9 @@ require_once 'includes/header.php';
 $database = new Database();
 $db = $database->getConnection();
 
+require_once 'includes/tournament_cleanup.php';
+cleanupStaleTournaments($db);
+
 // Fetch game images from database
 $stmt = $db->query("SELECT game_name, image_url FROM games");
 $db_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,7 +22,7 @@ $stmt = $db->query("SELECT t.*, u.username as owner_name,
                     FROM tournaments t 
                     JOIN users u ON t.owner_id = u.user_id 
                     WHERE t.status = 'active' 
-                    AND t.tournament_date >= NOW() - INTERVAL '2 hours'
+                    AND (t.tournament_date >= NOW() OR (t.tournament_date >= NOW() - INTERVAL '2 hours' AND t.room_id IS NOT NULL AND t.room_id != ''))
                     ORDER BY t.created_at DESC LIMIT 4");
 $featured_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
