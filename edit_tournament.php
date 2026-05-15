@@ -1,6 +1,7 @@
 <?php
 require_once 'config/database.php';
 require_once 'includes/header.php';
+require_once 'includes/telegram.php';
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || !isset($_GET['id'])) {
@@ -95,11 +96,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
                 $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $_GET['id'], $_SESSION['user_id']])) {
                 $success = "Tournament updated successfully!";
-                log_audit($db, $_SESSION['user_id'], 'UPDATE_TOURNAMENT', "Updated tournament: $tournament_name (ID: " . $_GET['id'] . ")");
-                // Refresh tournament data
-                $stmt = $db->prepare("SELECT * FROM tournaments WHERE tournament_id = ?");
-                $stmt->execute([$_GET['id']]);
                 $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // Send Telegram Notification
+                $msg = "<b>✏️ Tournament Updated!</b>\n\n";
+                $msg .= "<b>Name:</b> $tournament_name\n";
+                $msg .= "<b>Game:</b> $game_name\n";
+                $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
+                $msg .= "<b>Players:</b> $max_players\n";
+                if ($is_team_based) {
+                    $msg .= "<b>Team:</b> Yes ($team_size players/team, $max_teams teams)\n";
+                }
+                $msg .= "<b>Fee:</b> ₹" . number_format($registration_fee, 2) . "\n";
+                $msg .= "<b>Prize Style:</b> $prize_style\n";
+                $msg .= "<b>Winner Prize:</b> ₹" . number_format($winning_prize, 2) . "\n";
+                if ($prize_style == 'top_3') {
+                    $msg .= "<b>2nd:</b> ₹$second_prize | <b>3rd:</b> ₹$third_prize\n";
+                } elseif ($prize_style == 'per_kill') {
+                    $msg .= "<b>Per Kill:</b> ₹$per_kill_prize\n";
+                }
+                if (!empty($room_id)) {
+                    $msg .= "<b>Room ID:</b> $room_id\n";
+                    $msg .= "<b>Pass:</b> $room_password\n";
+                }
+                $msg .= "<b>Auto Approval:</b> " . ($auto_approval ? "Yes" : "No") . "\n";
+                $msg .= "<b>Contact:</b> $contact_info\n";
+                $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=" . $_GET['id'] . "'>View Changes</a>";
+                sendTelegramNotification($msg);
             } else {
                 $error = "Failed to update tournament. Please try again.";
             }
@@ -115,11 +138,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $max_players, $is_team_based, $team_size, $max_teams, $room_id, $room_password, 
             $is_paid, $registration_fee, $prize_style, $winning_prize, $second_prize, $third_prize, $per_kill_prize, $contact_info, $auto_approval, $_GET['id'], $_SESSION['user_id']])) {
             $success = "Tournament updated successfully!";
-            log_audit($db, $_SESSION['user_id'], 'UPDATE_TOURNAMENT', "Updated tournament: $tournament_name (ID: " . $_GET['id'] . ")");
-            // Refresh tournament data
-            $stmt = $db->prepare("SELECT * FROM tournaments WHERE tournament_id = ?");
-            $stmt->execute([$_GET['id']]);
             $tournament = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Send Telegram Notification
+            $msg = "<b>✏️ Tournament Updated (Free)!</b>\n\n";
+            $msg .= "<b>Name:</b> $tournament_name\n";
+            $msg .= "<b>Game:</b> $game_name\n";
+            $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
+            $msg .= "<b>Players:</b> $max_players\n";
+            if ($is_team_based) {
+                $msg .= "<b>Team:</b> Yes ($team_size players/team, $max_teams teams)\n";
+            }
+            if (!empty($room_id)) {
+                $msg .= "<b>Room ID:</b> $room_id\n";
+                $msg .= "<b>Pass:</b> $room_password\n";
+            }
+            $msg .= "<b>Auto Approval:</b> " . ($auto_approval ? "Yes" : "No") . "\n";
+            $msg .= "<b>Contact:</b> $contact_info\n";
+            $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=" . $_GET['id'] . "'>View Changes</a>";
+            sendTelegramNotification($msg);
         } else {
             $error = "Failed to update tournament. Please try again.";
         }

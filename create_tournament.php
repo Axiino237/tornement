@@ -114,9 +114,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $msg .= "<b>Name:</b> $tournament_name\n";
                 $msg .= "<b>Game:</b> $game_name\n";
                 $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
+                $msg .= "<b>Players:</b> $max_players\n";
+                if ($is_team_based) {
+                    $msg .= "<b>Team:</b> Yes ($team_size players/team, $max_teams teams)\n";
+                }
                 $msg .= "<b>Fee:</b> ₹" . number_format($registration_fee, 2) . "\n";
-                $msg .= "<b>Prize:</b> ₹" . number_format($winning_prize, 2) . "\n";
-                $msg .= "<b>Max Players:</b> $max_players\n";
+                $msg .= "<b>Prize Style:</b> $prize_style\n";
+                $msg .= "<b>Winner Prize:</b> ₹" . number_format($winning_prize, 2) . "\n";
+                if ($prize_style == 'top_3') {
+                    $msg .= "<b>2nd:</b> ₹$second_prize | <b>3rd:</b> ₹$third_prize\n";
+                } elseif ($prize_style == 'per_kill') {
+                    $msg .= "<b>Per Kill:</b> ₹$per_kill_prize\n";
+                }
+                if (!empty($room_id)) {
+                    $msg .= "<b>Room ID:</b> $room_id\n";
+                    $msg .= "<b>Pass:</b> $room_password\n";
+                }
+                $msg .= "<b>Auto Approval:</b> " . ($auto_approval ? "Yes" : "No") . "\n";
+                $msg .= "<b>Contact:</b> $contact_info\n";
                 $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=$new_id'>Join Now</a>";
                 sendTelegramNotification($msg);
 
@@ -143,7 +158,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $msg .= "<b>Name:</b> $tournament_name\n";
             $msg .= "<b>Game:</b> $game_name\n";
             $msg .= "<b>Date:</b> " . date('M d, Y H:i', strtotime($tournament_date)) . "\n";
-            $msg .= "<b>Max Players:</b> $max_players\n";
+            $msg .= "<b>Players:</b> $max_players\n";
+            if ($is_team_based) {
+                $msg .= "<b>Team:</b> Yes ($team_size players/team, $max_teams teams)\n";
+            }
+            if (!empty($room_id)) {
+                $msg .= "<b>Room ID:</b> $room_id\n";
+                $msg .= "<b>Pass:</b> $room_password\n";
+            }
+            $msg .= "<b>Auto Approval:</b> " . ($auto_approval ? "Yes" : "No") . "\n";
+            $msg .= "<b>Contact:</b> $contact_info\n";
             $msg .= "\n<a href='https://tornement.onrender.com/tournament_details.php?id=$new_id'>Join Now</a>";
             sendTelegramNotification($msg);
 
