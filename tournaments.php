@@ -23,7 +23,8 @@ $query = "SELECT t.*, u.username as owner_name,
           (SELECT COUNT(*) FROM tournament_participants WHERE tournament_id = t.tournament_id) as current_participants
           FROM tournaments t 
           JOIN users u ON t.owner_id = u.user_id 
-          WHERE t.status = 'active'";
+          WHERE t.status = 'active'
+          AND t.tournament_date >= NOW() - INTERVAL '2 hours'";
 
 $params = [];
 
@@ -53,7 +54,7 @@ $stmt->execute($params);
 $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get unique games for filter
-$stmt = $db->query("SELECT DISTINCT game_name FROM tournaments WHERE status = 'active' ORDER BY game_name");
+$stmt = $db->query("SELECT DISTINCT game_name FROM tournaments WHERE status = 'active' AND tournament_date >= NOW() - INTERVAL '2 hours' ORDER BY game_name");
 $games = $stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 

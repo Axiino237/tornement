@@ -19,6 +19,7 @@ $stmt = $db->query("SELECT t.*, u.username as owner_name,
                     FROM tournaments t 
                     JOIN users u ON t.owner_id = u.user_id 
                     WHERE t.status = 'active' 
+                    AND t.tournament_date >= NOW() - INTERVAL '2 hours'
                     ORDER BY t.created_at DESC LIMIT 4");
 $featured_tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
