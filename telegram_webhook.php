@@ -49,7 +49,12 @@ try {
                           ON CONFLICT (chat_id) DO UPDATE SET 
                           chat_type = EXCLUDED.chat_type, 
                           chat_title = EXCLUDED.chat_title");
-    $stmt->execute([$chat_id, $chat_type, $chat_title]);
+    $result = $stmt->execute([$chat_id, $chat_type, $chat_title]);
+    
+    file_put_contents('telegram_log.txt', "DB Insert Result: " . ($result ? "Success" : "Fail") . "\n", FILE_APPEND);
+    if (!$result) {
+        file_put_contents('telegram_log.txt', "DB Error Info: " . print_r($stmt->errorInfo(), true) . "\n", FILE_APPEND);
+    }
 
     // Respond to /start or if bot is added to group
     if (strpos($text, "/start") === 0 || isset($update["my_chat_member"])) {
