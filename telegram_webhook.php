@@ -7,7 +7,7 @@ $update = json_decode($content, true);
 // Debug: Log everything
 file_put_contents('telegram_log.txt', "Update Received: " . date('Y-m-d H:i:s') . "\n" . json_encode($update, JSON_PRETTY_PRINT) . "\n\n", FILE_APPEND);
 
-if (!$update || (!isset($update["message"]) && !isset($update["my_chat_member"]))) {
+if (!$update || (!isset($update["message"]) && !isset($update["my_chat_member"]) && !isset($update["channel_post"]))) {
     exit;
 }
 
